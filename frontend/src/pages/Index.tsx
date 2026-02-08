@@ -326,7 +326,7 @@ const Index = () => {
               <Briefcase className="h-12 w-12 mx-auto mb-4" />
               <h3 className="text-2xl font-semibold mb-4">For Providers</h3>
               <p className="opacity-80 mb-6">Grow your business with our platform.</p>
-              <Button size="lg" variant="outline" onClick={() => navigate('/business-signup')} className="w-full border-white text-white hover:bg-white hover:text-primary">
+              <Button size="lg" variant="outline" onClick={() => navigate('/business-signup')} className="w-full border-white text-primary hover:bg-white hover:text-primary">
                 Become a Provider
               </Button>
             </div>
