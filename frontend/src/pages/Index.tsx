@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,9 +32,38 @@ const Index = () => {
     { name: "Priya Fernando", location: "Galle", comment: "Great for finding trusted providers. The verification gives me confidence." },
   ];
 
+  const [backendStatus, setBackendStatus] = useState<{ connected: boolean; message: string } | null>(null);
+
+  useEffect(() => {
+    const checkBackend = async () => {
+      try {
+        const res = await fetch('http://localhost:3000/health');
+        const data = await res.json();
+        if (data.database && data.database.connected) {
+          setBackendStatus({ connected: true, message: 'Backend & DB Connected' });
+        } else {
+          setBackendStatus({ connected: false, message: 'Backend Connected, DB Failed' });
+        }
+      } catch (error) {
+        setBackendStatus({ connected: false, message: 'Backend Connection Failed' });
+        console.error('Backend check failed:', error);
+      }
+    };
+
+    checkBackend();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
       <Navbar />
+
+      {/* Backend Status Indicator */}
+      {backendStatus && (
+        <div className={`fixed bottom-4 right-4 z-50 px-4 py-2 rounded-full text-xs font-semibold text-white shadow-lg ${backendStatus.connected ? 'bg-green-500' : 'bg-red-500'
+          }`}>
+          {backendStatus.message}
+        </div>
+      )}
 
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 py-24 md:py-32">
