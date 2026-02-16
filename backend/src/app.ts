@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { PrismaService } from './common/prisma.service';
-//import authRoutes from './modules/auth/auth.routes';
+import authRoutes from './modules/authentication/auth.routes';
 //import vehicleRoutes from './modules/vehicle/vehicle.routes';
 //import bookingRoutes from './modules/booking/booking.routes';
 //import providerRoutes from './modules/provider/provider.routes';
@@ -50,7 +50,7 @@ function configureRoutes(app: Application): void {
     app.get('/health', healthCheckHandler);
 
     // API routes
-    //app.use('/api/auth', authRoutes);
+    app.use('/api/auth', authRoutes);
     //app.use('/api/vehicles', vehicleRoutes);
     //app.use('/api/bookings', bookingRoutes);
     //app.use('/api/providers', providerRoutes);
