@@ -1,37 +1,53 @@
+import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import { supabase } from './config/supabase';
+
 dotenv.config();
 
-import { createApp } from './app';
-import { PrismaService } from './common/prisma.service';
-
+const app = express();
 const port = process.env.PORT || 3000;
 
-async function bootstrap(): Promise<void> {
+app.use(cors());
+app.use(express.json());
+
+app.get('/', (_req, res) => {
+    res.json({ message: 'Welcome to Autofix Backend API' });
+});
+
+app.get('/health', async (_req, res) => {
     try {
-        // Connect to database via Prisma
-        await PrismaService.connect();
+        const { error } = await supabase.from('_health_check').select('*').limit(1);
 
-        // Create and start Express app
-        const app = createApp();
+        // Check if the error is related to table existence, which implies connectivity.
+        // If supabase returns an error saying "Could not find the table", it means we reached the server.
+        const isTableMissingError = error && (
+            error.code === '42P01' ||
+            error.code === 'PGRST301' ||
+            (error.message && error.message.includes('Could not find the table'))
+        );
 
-        app.listen(port, () => {
-            console.log(`🚀 Server is running on http://localhost:${port}`);
+        const isConnected = !error || isTableMissingError;
+
+        res.json({
+            status: 'ok',
+            timestamp: new Date(),
+            database: {
+                connected: isConnected,
+                message: isConnected ? 'Connected to Supabase' : 'Failed to connect to Supabase',
+                details: error ? error.message : null,
+                hint: !isConnected ? 'Check your SUPABASE_URL and SUPABASE_KEY' : undefined
+            }
         });
-
-        // Graceful shutdown handlers
-        const shutdown = async () => {
-            console.log('\n🛑 Shutting down gracefully...');
-            await PrismaService.disconnect();
-            process.exit(0);
-        };
-
-        process.on('SIGINT', shutdown);
-        process.on('SIGTERM', shutdown);
-    } catch (error) {
-        console.error('❌ Failed to start server:', error);
-        await PrismaService.disconnect();
-        process.exit(1);
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Health check failed',
+            error: err instanceof Error ? err.message : 'Unknown error'
+        });
     }
-}
+});
 
-bootstrap();
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
