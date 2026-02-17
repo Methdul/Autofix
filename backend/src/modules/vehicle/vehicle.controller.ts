@@ -26,6 +26,8 @@ export async function addVehicleHandler(
 ): Promise<void> {
     try {
         const ownerId = req.user!.userId;
+        //validation check
+        if (!ownerId) throw new Error('User not authenticated');
         const data: CreateVehicleDTO = req.body;
 
         const vehicle = await vehicleService.addVehicle(ownerId, data);
