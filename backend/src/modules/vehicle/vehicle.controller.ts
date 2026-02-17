@@ -50,7 +50,8 @@ export async function getMyVehiclesHandler(
     res: Response
 ): Promise<void> {
     try {
-        const ownerId = req.user!.userId;
+        const ownerId = req.user?.userId;
+        if (!ownerId) throw new Error('User not authenticated');
         const vehicles = await vehicleService.getMyVehicles(ownerId);
         res.status(200).json(vehicles);
     } catch (error) {
@@ -71,7 +72,8 @@ export async function deleteVehicleHandler(
     res: Response
 ): Promise<void> {
     try {
-        const ownerId = req.user!.userId;
+        const ownerId = req.user?.userId;
+        if (!ownerId) throw new Error('User not authenticated');
         const vehicleId = req.params.id;
 
         await vehicleService.deleteVehicle(vehicleId, ownerId);
