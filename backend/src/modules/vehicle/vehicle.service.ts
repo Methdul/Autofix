@@ -36,7 +36,7 @@ export class VehicleService {
         // Validate year is reasonable
         const currentYear = new Date().getFullYear();
         if (data.year < 1900 || data.year > currentYear + 1) {
-            throw new Error('Invalid vehicle year')
+            throw new Error('Invalid vehicle year');
         }
 
         return this.vehicleRepository.create(ownerId, data);
