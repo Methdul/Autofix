@@ -61,7 +61,7 @@ model User {
   @@map("users")
 }
 
-/// Vehicle model
+/// Vehicle Management Schema
 /// Represents vehicles owned by users with OWNER role
 model Vehicle {
   id           String    @id @default(uuid())
