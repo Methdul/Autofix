@@ -1,0 +1,145 @@
+// Prisma schema for Vehicle Service Ecosystem
+// Defines database models and relationships
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// User role enumeration
+/// Defines available user types in the system
+enum UserRole {
+  OWNER    // Vehicle owner who requests services
+  PROVIDER // Service provider who offers services
+}
+
+/// Booking status enumeration
+/// Represents the lifecycle states of a service booking
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+/// Service category enumeration
+/// Defines the type of service provider
+enum ServiceCategory {
+  GARAGE
+  CARRIER
+  DETAILER
+}
+
+/// Invoice status enumeration
+/// Represents the payment status of an invoice
+enum InvoiceStatus {
+  UNPAID
+  PAID
+}
+
+/// User model
+/// Represents all users in the system (both owners and providers)
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String    // Stored as hashed value
+  name             String
+  role             UserRole
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  vehicles         Vehicle[]        // One Owner -> Many Vehicles
+  providerBookings Booking[]        // Bookings where user is provider
+  providerProfile  ProviderProfile? // Provider's business profile
+
+  @@map("users")
+}
+
+/// Vehicle model
+/// Represents vehicles owned by users with OWNER role
+model Vehicle {
+  id           String    @id @default(uuid())
+  ownerId      String
+  make         String    // Manufacturer (e.g., Toyota)
+  model        String    // Model name
+  year         Int
+  licensePlate String    @unique
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  owner        User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  bookings     Booking[] // Bookings for this vehicle
+
+  @@map("vehicles")
+}
+
+/// Booking model
+/// Represents service bookings between owners and providers
+model Booking {
+  id          String        @id @default(uuid())
+  vehicleId   String
+  providerId  String
+  description String
+  serviceDate DateTime
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  vehicle     Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  provider    User          @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  invoice     Invoice?      // One-to-one relationship with Invoice
+
+  @@map("bookings")
+}
+
+/// Provider Profile model
+/// Represents business details of a service provider
+model ProviderProfile {
+  id           String          @id @default(uuid())
+  userId       String          @unique
+  businessName String
+  category     ServiceCategory
+  phone        String
+  address      String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services     ProviderService[] // One Provider -> Many Services
+
+  @@map("provider_profiles")
+}
+
+/// Provider Service model
+/// Represents individual service items in a provider's catalog
+model ProviderService {
+  id          String          @id @default(uuid())
+  profileId   String
+  name        String
+  price       Decimal         @db.Decimal(10, 2)
+  description String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  profile     ProviderProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("provider_services")
+}
+
+/// Invoice model
+/// Represents billing documents for completed bookings
+model Invoice {
+  id        String        @id @default(uuid())
+  bookingId String        @unique // One-to-one constraint
+  amount    Decimal       @db.Decimal(10, 2)
+  status    InvoiceStatus @default(UNPAID)
+  items     Json          // JSONB column for price snapshot
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  booking   Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
