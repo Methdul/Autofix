@@ -27,7 +27,7 @@ export class ProviderService {
         this.providerRepository = providerRepository;
     }
 
-    /**
+    /*
       Update provider profile
       Creates or updates business details
       
@@ -45,13 +45,13 @@ export class ProviderService {
         throw new Error('At least one field must be provided for update');
     }
 
-    /**
-     * Add service item to provider's menu
-     * 
-     * @param {string} userId - Provider user ID
-     * @param {CreateServiceItemDTO} data - Service item data
-     * @returns Promise with created service
-     * @throws {Error} If profile doesn't exist or validation fails
+    /*
+      Add service item to provider's menu
+      
+      @param {string} userId - Provider user ID
+      @param {CreateServiceItemDTO} data - Service item data
+      @returns Promise with created service
+      @throws {Error} If profile doesn't exist or validation fails
      */
     async addServiceToMenu(userId: string, data: CreateServiceItemDTO) {
         // Get provider's profile
