@@ -33,7 +33,7 @@ export class ProviderRepository {
             update: data,
             create: {
                 userId,
-                businessName: data.bussinessName!,
+                businessName: data.businessName!,
                 category: data.category!,
                 phone: data.phone!,
                 address: data.address!,

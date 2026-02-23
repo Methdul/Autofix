@@ -3,9 +3,9 @@
 // service categories for provider classification
 
 export enum ServiceCategory {
- GARAGE = 'GARAGE',
- CARRIER = 'CARRIER',
- DETAILER = 'DETAILER',    
+    GARAGE = 'GARAGE',
+    CARRIER = 'CARRIER',
+    DETAILER = 'DETAILER',
 }
 
 
@@ -14,7 +14,7 @@ export enum ServiceCategory {
 export interface ProviderProfile {
     id: string;
     userId: string;
-    bussinessName: string;
+    businessName: string;
     category: ServiceCategory;
     phone: string;
     address: string;
@@ -42,7 +42,7 @@ export interface CreateServiceItemDTO {
 
 // DTO for updating provider profile
 export interface UpdateProviderProfileDTO {
-    bussinessName?: string;
+    businessName?: string;
     category?: ServiceCategory;
     phone?: string;
     address?: string;
