@@ -1,5 +1,5 @@
 import { InvoiceRepository } from './invoice.repository';
-import { BookingRepository } from '../booking/booking.repository';
+import { BookingRepository } from '../bookings/booking.repository';
 import { Invoice, CreateInvoiceDTO, InvoiceWithDetails } from '../../types/invoice.types';
 import { BookingStatus } from '../../types/booking.types';
 

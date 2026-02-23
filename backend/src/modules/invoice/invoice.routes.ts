@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { InvoiceRepository } from './invoice.repository';
-import { BookingRepository } from '../booking/booking.repository';
+import { BookingRepository } from '../bookings/booking.repository';
 import { InvoiceService } from './invoice.service';
 import { InvoiceController } from './invoice.controller';
 import { authenticate, authorize, AuthenticatedRequest } from '../../common/middleware/auth.middleware';

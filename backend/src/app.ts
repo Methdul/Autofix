@@ -3,9 +3,9 @@ import cors from 'cors';
 import { PrismaService } from './common/prisma.service';
 import authRoutes from './modules/authentication/auth.routes';
 import vehicleRoutes from './modules/vehicle/vehicle.routes';
-//import bookingRoutes from './modules/booking/booking.routes';
-//import providerRoutes from './modules/provider/provider.routes';
-//import invoiceRoutes from './modules/invoice/invoice.routes';
+import bookingRoutes from './modules/bookings/booking.routes';
+import providerRoutes from './modules/provider/provider.routes';
+import invoiceRoutes from './modules/invoice/invoice.routes';
 
 
 /**
@@ -52,9 +52,9 @@ function configureRoutes(app: Application): void {
     // API routes
     app.use('/api/auth', authRoutes);
     app.use('/api/vehicles', vehicleRoutes);
-    //app.use('/api/bookings', bookingRoutes);
-    //app.use('/api/providers', providerRoutes);
-    //app.use('/api/invoices', invoiceRoutes);
+    app.use('/api/bookings', bookingRoutes);
+    app.use('/api/providers', providerRoutes);
+    app.use('/api/invoices', invoiceRoutes);
 }
 
 /**
