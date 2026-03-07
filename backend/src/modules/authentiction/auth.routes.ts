@@ -1,4 +1,3 @@
-//auth routes
 import { Router } from 'express';
 import { registerHandler, loginHandler } from './auth.controller';
 
