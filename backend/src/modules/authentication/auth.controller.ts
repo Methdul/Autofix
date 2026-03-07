@@ -1,3 +1,4 @@
+//auth controller 
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { UserRepository } from '../user/user.repository';
