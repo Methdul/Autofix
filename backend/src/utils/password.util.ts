@@ -1,3 +1,4 @@
+//password utility functions for hashing and comparing passwords
 import bcrypt from 'bcryptjs';
 
 /** Number of salt rounds for bcrypt hashing */

@@ -1,3 +1,4 @@
+//
 /**
  * User role enumeration
  * Defines the available roles within the Vehicle Service Ecosystem

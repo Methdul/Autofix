@@ -1,3 +1,4 @@
+//user repository
 import { PrismaService } from '../../common/prisma.service';
 import { User, CreateUserDTO, UserRole } from '../../types/user.types';
 import { UserRole as PrismaUserRole } from '@prisma/client';
