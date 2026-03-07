@@ -1,3 +1,4 @@
+// JWT utility functions for token generation and verification
 import jwt from 'jsonwebtoken';
 import { AuthPayload, TokenPayload } from '../types/auth.types';
 
