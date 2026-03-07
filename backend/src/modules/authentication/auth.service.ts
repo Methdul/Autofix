@@ -1,3 +1,4 @@
+//auth service 
 import { UserRepository } from '../user/user.repository';
 import { RegisterCredentials, LoginCredentials, AuthResponse } from '../../types/auth.types';
 import { hashPassword, comparePassword } from '../../utils/password.util';
