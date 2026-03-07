@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import LandingPage from "./pages/LandingPage";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             {/* Other routes will be added by team members */}
+            {/* 404 - catch all unmatched routes */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
