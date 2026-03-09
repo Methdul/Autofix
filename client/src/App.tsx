@@ -7,11 +7,12 @@ import LandingPage from './pages/LandingPage';
 //import ServicesPage from './pages/ServicesPage';
 //import AboutPage from './pages/AboutPage';
 //import ProviderProfilePage from './pages/ProviderProfilePage';
-//import LoginPage from './pages/auth/LoginPage';
-//import RegisterPage from './pages/auth/RegisterPage';
-//import BusinessRegisterPage from './pages/auth/BusinessRegisterPage';
-//import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
-//import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import { AuthProvider } from './context/AuthContext';
+import BusinessRegisterPage from './pages/auth/BusinessRegisterPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 
 
 /**
@@ -20,15 +21,15 @@ import LandingPage from './pages/LandingPage';
  */
 function App() {
   return (
-
+<AuthProvider>
     <BrowserRouter>
       <Routes>
         {/* Auth routes - no navbar/footer */}
-        {/* <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/register/business" element={<BusinessRegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password/:token" element={<ResetPasswordPage />} /> */}
+         <Route path="/login" element={<LoginPage />} />
+         <Route path="/register" element={<RegisterPage />} />
+         <Route path="/register/business" element={<BusinessRegisterPage />} />
+         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+         <Route path="/reset-password/:token" element={<ResetPasswordPage />} /> 
 
         {/* Main routes - with navbar/footer */}
         <Route path="/*" element={
@@ -49,6 +50,7 @@ function App() {
         } />
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
 
   );
 }
