@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 /// User role enumeration
@@ -35,6 +34,7 @@ enum ServiceCategory {
   GARAGE
   CARRIER
   DETAILER
+  TYRE_HOUSE
 }
 
 /// Invoice status enumeration
@@ -47,21 +47,26 @@ enum InvoiceStatus {
 /// User model
 /// Represents all users in the system (both owners and providers)
 model User {
-  id               String    @id @default(uuid())
-  email            String    @unique
-  password         String    // Stored as hashed value
-  name             String
-  role             UserRole
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  vehicles         Vehicle[]        // One Owner -> Many Vehicles
-  providerBookings Booking[]        // Bookings where user is provider
-  providerProfile  ProviderProfile? // Provider's business profile
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  password             String    // Stored as hashed value
+  name                 String
+  role                 UserRole
+  phone                String?   // Optional contact number
+  district             String?   // Optional district/region
+  city                 String?   // Optional city
+  passwordResetToken   String?   @unique  // Hashed reset token
+  passwordResetExpires DateTime?          // Token expiry timestamp
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  vehicles             Vehicle[]        // One Owner -> Many Vehicles
+  providerBookings     Booking[]        // Bookings where user is provider
+  providerProfile      ProviderProfile? // Provider's business profile
 
   @@map("users")
 }
 
-/// Vehicle Management Schema
+/// Vehicle model
 /// Represents vehicles owned by users with OWNER role
 model Vehicle {
   id           String    @id @default(uuid())
@@ -81,17 +86,20 @@ model Vehicle {
 /// Booking model
 /// Represents service bookings between owners and providers
 model Booking {
-  id          String        @id @default(uuid())
+  id          String           @id @default(uuid())
   vehicleId   String
   providerId  String
+  serviceId   String?          // Optional link to a specific ProviderService
+  timeSlot    String?          // e.g. "10:00 AM"
   description String
   serviceDate DateTime
-  status      BookingStatus @default(PENDING)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  vehicle     Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  provider    User          @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  invoice     Invoice?      // One-to-one relationship with Invoice
+  status      BookingStatus    @default(PENDING)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  vehicle     Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  provider    User             @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  service     ProviderService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  invoice     Invoice?         // One-to-one relationship with Invoice
 
   @@map("bookings")
 }
@@ -99,16 +107,20 @@ model Booking {
 /// Provider Profile model
 /// Represents business details of a service provider
 model ProviderProfile {
-  id           String          @id @default(uuid())
-  userId       String          @unique
-  businessName String
-  category     ServiceCategory
-  phone        String
-  address      String
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  services     ProviderService[] // One Provider -> Many Services
+  id                  String          @id @default(uuid())
+  userId              String          @unique
+  businessName        String
+  category            ServiceCategory
+  streetAddress       String          // Street-level address
+  district            String          // District/region
+  city                String          // City
+  businessDescription String?         // Optional business description
+  registrationNumber  String?         // Optional BR number
+  photoUrl            String?         // Optional profile photo URL
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services            ProviderService[] // One Provider -> Many Services
 
   @@map("provider_profiles")
 }
@@ -121,9 +133,12 @@ model ProviderService {
   name        String
   price       Decimal         @db.Decimal(10, 2)
   description String?
+  vehicleType String?         // e.g. Car, Van, Truck, SUV, Sports Car
+  duration    Int?            // Estimated duration in minutes
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   profile     ProviderProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  bookings    Booking[]       // Bookings for this specific service
 
   @@map("provider_services")
 }
@@ -143,3 +158,15 @@ model Invoice {
   @@map("invoices")
 }
 
+/// Contact Message model
+/// Stores contact form submissions from the public website
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}
