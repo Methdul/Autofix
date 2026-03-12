@@ -3,10 +3,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import LandingPage from './pages/LandingPage';
-//import ProvidersPage from './pages/ProvidersPage';
+import ProvidersPage from './pages/ProvidersPage';
 //import ServicesPage from './pages/ServicesPage';
 //import AboutPage from './pages/AboutPage';
-//import ProviderProfilePage from './pages/ProviderProfilePage';
+import ProviderProfilePage from './pages/ProviderProfilePage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import { AuthProvider } from './context/AuthContext';
@@ -38,11 +38,11 @@ function App() {
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<LandingPage />} />
-                {/* <Route path="/providers" element={<ProvidersPage />} />
+                <Route path="/providers" element={<ProvidersPage />} />
                   <Route path="/providers/:id" element={<ProviderProfilePage />} />
-                  <Route path="/services" element={<ServicesPage />} />
+                  {/*<Route path="/services" element={<ServicesPage />} />
                   <Route path="/about" element={<AboutPage />} />
-                  <Route path="/contact" element={<AboutPage />} /> */}
+                  <Route path="/contact" element={<AboutPage />} />*/}
               </Routes>
             </main>
             <Footer />
