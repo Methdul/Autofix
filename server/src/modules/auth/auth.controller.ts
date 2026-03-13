@@ -107,3 +107,4 @@ export async function resetPasswordHandler(req: Request, res: Response): Promise
         res.status(400).json({ error: message });
     }
 }
+

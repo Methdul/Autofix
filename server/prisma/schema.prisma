@@ -170,3 +170,4 @@ model ContactMessage {
 
   @@map("contact_messages")
 }
+
