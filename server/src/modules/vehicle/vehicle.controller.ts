@@ -1,8 +1,3 @@
-/**
- * Vehicle Controller
- * Coordinates HTTP requests for vehicle management.
- * Interfaces between the API routing layer and the Vehicle Service.
- */
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../common/middleware/auth.middleware';
 import { VehicleService } from './vehicle.service';
@@ -26,8 +21,6 @@ export async function addVehicleHandler(
 ): Promise<void> {
     try {
         const ownerId = req.user!.userId;
-        //validation check
-        if (!ownerId) throw new Error('User not authenticated');
         const data: CreateVehicleDTO = req.body;
 
         const vehicle = await vehicleService.addVehicle(ownerId, data);
@@ -50,8 +43,7 @@ export async function getMyVehiclesHandler(
     res: Response
 ): Promise<void> {
     try {
-        const ownerId = req.user?.userId;
-        if (!ownerId) throw new Error('User not authenticated');
+        const ownerId = req.user!.userId;
         const vehicles = await vehicleService.getMyVehicles(ownerId);
         res.status(200).json(vehicles);
     } catch (error) {
@@ -72,8 +64,7 @@ export async function deleteVehicleHandler(
     res: Response
 ): Promise<void> {
     try {
-        const ownerId = req.user?.userId;
-        if (!ownerId) throw new Error('User not authenticated');
+        const ownerId = req.user!.userId;
         const vehicleId = req.params.id;
 
         await vehicleService.deleteVehicle(vehicleId, ownerId);
