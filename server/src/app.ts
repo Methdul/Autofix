@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { PrismaService } from './common/prisma.service';
-import authRoutes from './modules/authentication/auth.routes';
+import authRoutes from './modules/auth/auth.routes';
 import vehicleRoutes from './modules/vehicle/vehicle.routes';
 import bookingRoutes from './modules/bookings/booking.routes';
 import providerRoutes from './modules/provider/provider.routes';

@@ -52,7 +52,7 @@ export class ProviderService {
      */
     async updateProfile(userId: string, data: UpdateProviderProfileDTO) {
         // Validate required fields for new profiles
-        if (data.businessName || data.category || data.streetAddress || data.district || data.city) {
+        if (data.businessName || data.category || data.streetAddress || data.city || data.district || data.businessDescription || data.registrationNumber || data.photoUrl) {
             return await this.providerRepository.upsertProfile(userId, data);
         }
 
