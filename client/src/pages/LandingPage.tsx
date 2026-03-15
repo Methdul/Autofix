@@ -1,6 +1,5 @@
 import Hero from '../components/landing/Hero';
 import CategoryGrid from '../components/landing/CategoryGrid';
-import ProcessFlow from '../components/landing/ProcessFlow';
 import DualCTA from '../components/landing/DualCTA';
 import Benefits from '../components/landing/Benifits';
 
