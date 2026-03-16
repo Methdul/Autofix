@@ -111,6 +111,7 @@ model ProviderProfile {
   userId              String          @unique
   businessName        String
   category            ServiceCategory
+  phone               String?         // Business contact number
   streetAddress       String          // Street-level address
   district            String          // District/region
   city                String          // City
