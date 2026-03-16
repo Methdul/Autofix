@@ -132,4 +132,8 @@ export interface ServiceListItem {
     providerPhotoUrl?: string;
     rating: number;
     reviewCount: number;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> af0452f598c6c35d80c5a007f832a112642f9d56

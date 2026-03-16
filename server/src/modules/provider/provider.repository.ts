@@ -202,11 +202,17 @@ export class ProviderRepository {
                 userId,
                 businessName: data.businessName!,
                 category: data.category!,
+<<<<<<< HEAD
                 streetAddress: data.streetAddress ?? '',
                 district: data.district ?? '',
                 city: data.city ?? '',
                 businessDescription: data.businessDescription,
                 registrationNumber: data.registrationNumber,
+=======
+                streetAddress: data.streetAddress!,
+                district: data.district!,
+                city: data.city!,
+>>>>>>> af0452f598c6c35d80c5a007f832a112642f9d56
             },
         });
     }
