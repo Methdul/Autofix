@@ -10,6 +10,11 @@ import {
     UpdateProviderProfileDTO,
     CreateServiceItemDTO,
     ProviderDetailsResponse,
+    ProviderFilterDTO,
+    ProviderListItem,
+    ProviderBadge,
+    ServiceFilterDTO,
+    ServiceListItem,
 } from '../../types/provider.types';
 
 /**
@@ -20,9 +25,171 @@ export class ProviderRepository {
     private prisma = PrismaService.getInstance();
 
     /**
+     * Get all provider profiles with optional filters
+     * @param {ProviderFilterDTO} filters - Optional filters (location, type, search)
+     * @returns Promise with list of providers
+     */
+    async getAllProviders(filters: ProviderFilterDTO): Promise<ProviderListItem[]> {
+        const where: Record<string, unknown> = {};
+
+        if (filters.location) {
+            where.OR = [
+                { city: { contains: filters.location, mode: 'insensitive' } },
+                { district: { contains: filters.location, mode: 'insensitive' } },
+            ];
+        }
+
+        if (filters.search) {
+            where.businessName = { contains: filters.search, mode: 'insensitive' };
+        }
+
+        if (filters.type === 'Authorized') {
+            where.registrationNumber = { not: null };
+        } else if (filters.type === 'New') {
+            where.createdAt = { gte: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) };
+        }
+
+        const profiles = await this.prisma.providerProfile.findMany({
+            where,
+            include: { services: true },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        let results = profiles.map((p) => this.mapToListItem(p));
+
+        if (filters.minRating) {
+            results = results.filter((r) => r.rating >= filters.minRating!);
+        }
+
+        if (filters.type === 'Premium') {
+            results = results.filter((r) => r.badge === 'Premium');
+        }
+
+        return results;
+    }
+
+    /**
+     * Get all available services (across all providers) with optional filters
+     * @param {ServiceFilterDTO} filters - Optional filter criteria
+     * @returns Promise with flattened list of service items
+     */
+    async getAvailableServices(filters: ServiceFilterDTO): Promise<ServiceListItem[]> {
+        const where: Record<string, unknown> = {};
+
+        if (filters.vehicleType && filters.vehicleType !== 'Any') {
+            where.vehicleType = filters.vehicleType;
+        }
+        if (filters.maxPrice !== undefined) {
+            where.price = { lte: filters.maxPrice };
+        }
+        if (filters.maxDuration !== undefined) {
+            where.duration = { lte: filters.maxDuration };
+        }
+        if (filters.search) {
+            where.name = { contains: filters.search, mode: 'insensitive' };
+        }
+
+        const services = await this.prisma.providerService.findMany({
+            where,
+            include: { profile: true },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        let results: ServiceListItem[] = services.map((s) => ({
+            id: s.id,
+            name: s.name,
+            price: parseFloat(s.price.toString()),
+            description: s.description ?? undefined,
+            vehicleType: s.vehicleType ?? undefined,
+            duration: s.duration ?? undefined,
+            providerName: s.profile.businessName,
+            providerCity: s.profile.city,
+            providerDistrict: s.profile.district,
+            providerId: s.profile.userId,
+            providerPhotoUrl: s.profile.photoUrl ?? undefined,
+            rating: 4.5,     // placeholder – no ratings table yet
+            reviewCount: 200, // placeholder
+        }));
+
+        if (filters.location) {
+            const loc = filters.location.toLowerCase();
+            results = results.filter(
+                (r) =>
+                    r.providerCity.toLowerCase().includes(loc) ||
+                    r.providerDistrict.toLowerCase().includes(loc)
+            );
+        }
+
+        if (filters.minRating) {
+            results = results.filter((r) => r.rating >= filters.minRating!);
+        }
+
+        return results;
+    }
+
+    /**
+     * Get a specific service by ID
+     * @param {string} serviceId - Service ID
+     * @returns Promise with service item or null
+     */
+    async getServiceById(serviceId: string): Promise<ServiceListItem | null> {
+        const service = await this.prisma.providerService.findUnique({
+            where: { id: serviceId },
+            include: { profile: true },
+        });
+
+        if (!service) return null;
+
+        return {
+            id: service.id,
+            name: service.name,
+            price: parseFloat(service.price.toString()),
+            description: service.description ?? undefined,
+            vehicleType: service.vehicleType ?? undefined,
+            duration: service.duration ?? undefined,
+            providerName: service.profile.businessName,
+            providerCity: service.profile.city,
+            providerDistrict: service.profile.district,
+            providerId: service.profile.userId,
+            providerPhotoUrl: service.profile.photoUrl ?? undefined,
+            rating: 4.5,     // placeholder
+            reviewCount: 200, // placeholder
+        };
+    }
+
+    /** Derive a display badge from profile data */
+    private getBadge(profile: {
+        registrationNumber?: string | null;
+        services: unknown[];
+        createdAt: Date;
+    }): ProviderBadge {
+        const ageMs = Date.now() - new Date(profile.createdAt).getTime();
+        if (ageMs < 90 * 24 * 60 * 60 * 1000) return 'New';
+        if (profile.registrationNumber) return 'Authorized';
+        if (profile.services.length >= 5) return 'Premium';
+        return 'New';
+    }
+
+    /** Map raw Prisma profile to ProviderListItem */
+    private mapToListItem(profile: any): ProviderListItem {
+        return {
+            id: profile.id,
+            businessName: profile.businessName,
+            category: profile.category as ServiceCategory,
+            city: profile.city,
+            district: profile.district,
+            businessDescription: profile.businessDescription ?? undefined,
+            photoUrl: profile.photoUrl ?? undefined,
+            badge: this.getBadge(profile),
+            rating: 4.5,       // placeholder – no ratings table yet
+            reviewCount: 12,   // placeholder
+            serviceCount: profile.services.length,
+        };
+    }
+
+    /**
      * Upsert provider profile
      * Creates new profile or updates existing one
-     * 
      * @param {string} userId - The provider user ID
      * @param {UpdateProviderProfileDTO} data - Profile data to upsert
      * @returns Promise with created/updated profile
@@ -35,16 +202,17 @@ export class ProviderRepository {
                 userId,
                 businessName: data.businessName!,
                 category: data.category!,
-                streetAddress: data.streetAddress!,
-                district: data.district!,
-                city: data.city!,
+                streetAddress: data.streetAddress ?? '',
+                district: data.district ?? '',
+                city: data.city ?? '',
+                businessDescription: data.businessDescription,
+                registrationNumber: data.registrationNumber,
             },
         });
     }
 
     /**
      * Add service item to provider's catalog
-     * 
      * @param {string} profileId - Provider profile ID
      * @param {CreateServiceItemDTO} data - Service item data
      * @returns Promise with created service
@@ -62,7 +230,6 @@ export class ProviderRepository {
 
     /**
      * Remove service item from catalog
-     * 
      * @param {string} serviceId - Service ID to delete
      * @returns Promise with deleted service
      */
@@ -74,7 +241,6 @@ export class ProviderRepository {
 
     /**
      * Get provider profile with all services by user ID
-     * 
      * @param {string} userId - Provider user ID
      * @returns Promise with provider details or null
      */
@@ -89,7 +255,6 @@ export class ProviderRepository {
 
     /**
      * Get provider profile by profile ID
-     * 
      * @param {string} profileId - Provider profile ID
      * @returns Promise with provider details or null
      */
@@ -102,9 +267,7 @@ export class ProviderRepository {
         return profile ? this.mapToProviderDetails(profile) : null;
     }
 
-    /**
-     * Map Prisma provider profile to domain model
-     */
+    /** Map Prisma provider profile to domain model */
     private mapToProviderDetails(profile: any): ProviderDetailsResponse {
         const { services, ...profileData } = profile;
 
