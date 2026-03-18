@@ -7,3 +7,14 @@ interface VehicleSpecsSectionProps {
   onDelete: () => Promise<void>;
   onUpdate: (data: Partial<Vehicle>) => Promise<any>;
 }
+
+const VehicleSpecsSection: React.FC<VehicleSpecsSectionProps> = ({ vehicle, onDelete, onUpdate }) => {
+  // Logic will go here next
+  return (
+    <div>
+      {/* UI will go here later */}
+    </div>
+  );
+};
+
+export default VehicleSpecsSection;
