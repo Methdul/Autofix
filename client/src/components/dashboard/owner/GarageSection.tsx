@@ -1,6 +1,6 @@
 import React from 'react';
 import { Car } from 'lucide-react';
-//import VehicleCard from './vehicles/VehicleCard';
+import VehicleCard from './vehicles/VehicleCard';
 import type { Vehicle } from '../../../api/vehicle.api';
 
 interface GarageSectionProps {
