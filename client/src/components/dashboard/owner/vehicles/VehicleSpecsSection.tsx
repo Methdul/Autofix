@@ -17,6 +17,17 @@ const VehicleSpecsSection: React.FC<VehicleSpecsSectionProps> = ({ vehicle, onDe
     licensePlate: vehicle.licensePlate,
   });
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      `Are you sure you want to remove this ${vehicle.make} ${vehicle.model}? This action cannot be undone.`
+    );
+
+    if (confirmed) {
+      await onDelete();
+    }
+  };
+
   return (
     <div>
       {/* UI will go here later */}
