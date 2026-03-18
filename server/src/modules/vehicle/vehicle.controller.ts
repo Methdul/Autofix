@@ -53,6 +53,53 @@ export async function getMyVehiclesHandler(
 }
 
 /**
+ * Handle getting a single vehicle's details
+ * Protected: Owner only
+ */
+export async function getVehicleDetailsHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const ownerId = req.user!.userId;
+        const vehicleId = req.params.id;
+        const vehicle = await vehicleService.getVehicleById(vehicleId, ownerId);
+        res.status(200).json(vehicle);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to fetch vehicle details';
+        res.status(404).json({ error: message });
+    }
+}
+
+/**
+ * Handle updating a vehicle's photo
+ * Protected: Owner only
+ */
+export async function updateVehiclePhotoHandler(
+    req: any, // Change 'AuthenticatedRequest' to 'any' here
+    res: Response
+): Promise<void> {
+    try {
+        const ownerId = req.user!.userId;
+        const vehicleId = req.params.id;
+        const file = req.file; // Now the Watchman will allow this!
+
+        if (!file) {
+            res.status(400).json({ error: 'Photo file is required' });
+            return;
+        }
+
+        const photoUrl = `/uploads/${file.filename}`;
+
+        const vehicle = await vehicleService.updateVehiclePhoto(vehicleId, ownerId, photoUrl);
+        res.status(200).json(vehicle);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to update vehicle photo';
+        res.status(400).json({ error: message });
+    }
+}
+
+/**
  * Handle deleting a vehicle
  * Protected: Owner only
  * 
@@ -71,6 +118,27 @@ export async function deleteVehicleHandler(
         res.status(200).json({ message: 'Vehicle deleted successfully' });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to delete vehicle';
+        res.status(400).json({ error: message });
+    }
+}
+
+/**
+ * Handle updating vehicle information
+ * Protected: Owner only
+ */
+export async function updateVehicleHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const ownerId = req.user!.userId;
+        const vehicleId = req.params.id;
+        const data = req.body;
+
+        const vehicle = await vehicleService.updateVehicle(vehicleId, ownerId, data);
+        res.status(200).json(vehicle);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to update vehicle';
         res.status(400).json({ error: message });
     }
 }
