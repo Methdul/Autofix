@@ -9,7 +9,14 @@ interface VehicleSpecsSectionProps {
 }
 
 const VehicleSpecsSection: React.FC<VehicleSpecsSectionProps> = ({ vehicle, onDelete, onUpdate }) => {
-  // Logic will go here next
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    make: vehicle.make,
+    model: vehicle.model,
+    year: vehicle.year,
+    licensePlate: vehicle.licensePlate,
+  });
+  const [isSaving, setIsSaving] = useState(false);
   return (
     <div>
       {/* UI will go here later */}
