@@ -28,6 +28,28 @@ const VehicleSpecsSection: React.FC<VehicleSpecsSectionProps> = ({ vehicle, onDe
     }
   };
 
+  const handleUpdate = async () => {
+    setIsSaving(true);
+    try {
+      const success = await onUpdate(editForm);
+      if (success) {
+        setIsEditing(false);
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditForm({
+      make: vehicle.make,
+      model: vehicle.model,
+      year: vehicle.year,
+      licensePlate: vehicle.licensePlate,
+    });
+    setIsEditing(false);
+  };
+
   return (
     <div>
       {/* UI will go here later */}
