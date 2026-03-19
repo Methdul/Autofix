@@ -1,55 +1,146 @@
-// provider.types.ts is the provider profile and service domain types in it
+/**
+ * Provider Profile and Service Domain Types
+ */
 
-// service categories for provider classification
+/** Provider badge type used for UI display */
+export type ProviderBadge = 'Authorized' | 'Premium' | 'New';
 
+/** Query filters for listing providers */
+export interface ProviderFilterDTO {
+    location?: string;
+    minRating?: number;
+    type?: ProviderBadge;
+    search?: string;
+}
+
+/** Lightweight provider item for listing pages */
+export interface ProviderListItem {
+    id: string;
+    businessName: string;
+    category: ServiceCategory;
+    city: string;
+    district: string;
+    businessDescription?: string;
+    photoUrl?: string;
+    badge: ProviderBadge;
+    rating: number;
+    reviewCount: number;
+    serviceCount: number;
+}
+
+/**
+ * Service Categories for Provider Classification
+ */
 export enum ServiceCategory {
     GARAGE = 'GARAGE',
     CARRIER = 'CARRIER',
     DETAILER = 'DETAILER',
+    TYRE_HOUSE = 'TYRE_HOUSE',
 }
 
 
-// business details of service provider, provider profile interface
-
+/**
+ * Provider Profile Interface
+ * Represents the business details of a service provider
+ */
 export interface ProviderProfile {
     id: string;
     userId: string;
     businessName: string;
     category: ServiceCategory;
-    phone: string;
-    address: string;
+    streetAddress: string;
+    district: string;
+    city: string;
+    businessDescription?: string;
+    registrationNumber?: string;
+    photoUrl?: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
-// for specific service item in the provider's catalog
+/**
+ * Provider Service Interface
+ * Represents a specific service item in the provider's catalog
+ */
 export interface ProviderService {
     id: string;
-    providerId: string;
+    profileId: string;
     name: string;
     price: number;
-    description?: string;   // "?" used for optional property so description is optional
+    description?: string;
+    vehicleType?: string;
+    duration?: number;
     createdAt: Date;
     updatedAt: Date;
 }
 
-// DTO (Data Transfer Object) for creating a new service item
+/**
+ * DTO for creating a new service item
+ */
 export interface CreateServiceItemDTO {
     name: string;
     price: number;
     description?: string;
+    vehicleType?: string;
+    duration?: number;
 }
 
-// DTO for updating provider profile
+/**
+ * DTO for updating an existing service item
+ */
+export interface UpdateServiceItemDTO {
+    name?: string;
+    price?: number;
+    description?: string;
+    vehicleType?: string;
+    duration?: number;
+}
+
+/**
+ * DTO for updating provider profile
+ */
 export interface UpdateProviderProfileDTO {
     businessName?: string;
     category?: ServiceCategory;
-    phone?: string;
-    address?: string;
+    streetAddress?: string;
+    district?: string;
+    city?: string;
+    businessDescription?: string;
+    registrationNumber?: string;
+    photoUrl?: string;
 }
 
-// response object for provider profile
+/**
+ * Response type for provider details with services
+ */
 export interface ProviderDetailsResponse {
     profile: ProviderProfile;
     services: ProviderService[];
+}
+
+/** Query filters for the public service listing */
+export interface ServiceFilterDTO {
+    vehicleType?: string;
+    location?: string;
+    minRating?: number;
+    maxPrice?: number;
+    maxDuration?: number;
+    search?: string;
+}
+
+/** Flattened service item for the public listing page */
+export interface ServiceListItem {
+    id: string;
+    name: string;
+    price: number;
+    description?: string;
+    vehicleType?: string;
+    duration?: number;
+    providerName: string;
+    providerCity: string;
+    providerDistrict: string;
+    providerId: string;
+    providerPhotoUrl?: string;
+    rating: number;
+    reviewCount: number;
 }
