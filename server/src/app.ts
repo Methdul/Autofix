@@ -1,12 +1,14 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import path from 'path';
 import { PrismaService } from './common/prisma.service';
-import authRoutes from './modules/auth/auth.routes';
+//import authRoutes from './modules/auth/auth.routes';
 import vehicleRoutes from './modules/vehicle/vehicle.routes';
-import bookingRoutes from './modules/bookings/booking.routes';
+//import bookingRoutes from './modules/booking/booking.routes';
 import providerRoutes from './modules/provider/provider.routes';
+//import serviceRoutes from './modules/provider/service.routes';
 import invoiceRoutes from './modules/invoice/invoice.routes';
-
+//import contactRoutes from './modules/contact/contact.routes';
 
 /**
  * Creates and configures the Express application
@@ -38,6 +40,8 @@ function configureMiddleware(app: Application): void {
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    // Serve uploaded provider photos as static files
+    app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 }
 
 /**
@@ -50,11 +54,13 @@ function configureRoutes(app: Application): void {
     app.get('/health', healthCheckHandler);
 
     // API routes
-    app.use('/api/auth', authRoutes);
+    //app.use('/api/auth', authRoutes);
     app.use('/api/vehicles', vehicleRoutes);
-    app.use('/api/bookings', bookingRoutes);
+    //app.use('/api/bookings', bookingRoutes);
     app.use('/api/providers', providerRoutes);
+    //app.use('/api/services', serviceRoutes);
     app.use('/api/invoices', invoiceRoutes);
+    //app.use('/api/contact', contactRoutes);
 }
 
 /**
