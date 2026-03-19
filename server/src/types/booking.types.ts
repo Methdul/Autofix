@@ -102,3 +102,4 @@ export interface BookingWithDetails extends Booking {
         amount: any;
     };
 }
+
