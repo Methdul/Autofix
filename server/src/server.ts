@@ -1,9 +1,6 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import { createApp } from './app';
 import { PrismaService } from './common/prisma.service';
-
-// Load environment variables
-dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 

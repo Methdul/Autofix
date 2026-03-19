@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../components/auth/AuthLayout';
 import Button from '../../components/ui/Button';
 import { useAuth } from '../../hooks/useAuth';
-import EssentialInfoSection from './EssentialInfoSection';
-import LocationSection from './LocationSection';
-import DetailsSection from './DetailsSection';
+import EssentialInfoSection from '../../components/auth/EssentialInfoSection';
+import LocationSection from '../../components/auth/LocationSection';
+import DetailsSection from '../../components/auth/DetailsSection';
 
 /**
  * Business registration page component for service providers
