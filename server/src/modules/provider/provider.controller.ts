@@ -10,11 +10,62 @@ import { ProviderRepository } from './provider.repository';
 import {
     UpdateProviderProfileDTO,
     CreateServiceItemDTO,
+    ProviderFilterDTO,
+    ServiceFilterDTO,
 } from '../../types/provider.types';
+
+
 
 /** Instantiate dependencies following DIP */
 const providerRepository = new ProviderRepository();
 const providerService = new ProviderService(providerRepository);
+
+/**
+ * GET /api/providers
+ * List all providers with optional filtering (Public)
+ */
+export async function getAllProvidersHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const filters: ProviderFilterDTO = {
+            location: req.query.location as string | undefined,
+            search: req.query.search as string | undefined,
+            type: req.query.type as ProviderFilterDTO['type'],
+            minRating: req.query.minRating ? parseFloat(req.query.minRating as string) : undefined,
+        };
+        const providers = await providerService.getAllProviders(filters);
+        res.status(200).json(providers);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to fetch providers';
+        res.status(500).json({ error: message });
+    }
+}
+
+/**
+ * POST /api/providers/photo
+ * Upload or replace the provider's profile photo
+ * Protected: PROVIDER only
+ */
+export async function uploadPhotoHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const userId = req.user!.userId;
+        if (!req.file) {
+            res.status(400).json({ error: 'No image file provided' });
+            return;
+        }
+        const photoUrl = `/uploads/${req.file.filename}`;
+        const profile = await providerService.updateProfile(userId, { photoUrl });
+        res.status(200).json({ photoUrl, profile });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Upload failed';
+        res.status(500).json({ error: message });
+    }
+}
 
 /**
  * PUT /api/providers/profile
@@ -122,6 +173,55 @@ export async function getMyProfileHandler(
         res.status(200).json(details);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to fetch profile';
+        res.status(500).json({ error: message });
+    }
+}
+
+/**
+ * GET /api/services
+ * List all available services with optional filtering (Public)
+ */
+export async function getAvailableServicesHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const filters: ServiceFilterDTO = {
+            vehicleType: req.query.vehicleType as string | undefined,
+            location: req.query.location as string | undefined,
+            minRating: req.query.minRating ? parseFloat(req.query.minRating as string) : undefined,
+            maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
+            maxDuration: req.query.maxDuration ? parseInt(req.query.maxDuration as string) : undefined,
+            search: req.query.search as string | undefined,
+        };
+        const services = await providerService.getAvailableServices(filters);
+        res.status(200).json(services);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to fetch services';
+        res.status(500).json({ error: message });
+    }
+}
+
+/**
+ * GET /api/services/:id
+ * Get a specific service by ID (Public)
+ */
+export async function getServiceByIdHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const serviceId = req.params.id;
+        const service = await providerService.getServiceById(serviceId);
+
+        if (!service) {
+            res.status(404).json({ error: 'Service not found' });
+            return;
+        }
+
+        res.status(200).json(service);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to fetch service details';
         res.status(500).json({ error: message });
     }
 }
