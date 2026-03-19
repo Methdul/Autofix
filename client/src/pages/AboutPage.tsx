@@ -6,41 +6,29 @@ import ValuePill from '../../src/components/about/ValuePill';
 
 export default function AboutPage() {
     return (
-        <div
-            className="min-h-screen relative text-white"
-            style={{
-                backgroundImage: `url('/dot-bg.png')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundAttachment: 'fixed',
-            }}
-        >
-            {/* Dark cinematic overlay */}
-           {/* <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-slate-900/30 to-slate-900/50 backdrop-blur-[2px] z-0" /> */}
-
+        <div className="min-h-screen bg-gray-50 font-sans">
             <div className="relative z-10">
-
                 {/* ── Hero ─────────────────────────────────────────── */}
-                <section className="pt-24 pb-16 px-4 text-center ">
+                <section className="pt-24 pb-16 px-4 text-center">
                     {/* Eyebrow badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#2651A7]/40 bg-[#2651A7]/5 text-[#2651A7]/80 text-xs font-semibold uppercase tracking-widest mb-6">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#2651A7] animate-pulse" />
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-xs font-semibold uppercase tracking-widest mb-6">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
                         Sri Lanka's Trusted Auto Platform
                     </div>
-                    <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4 text-[#333842]">
+                    <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4 text-gray-900">
                         About{' '}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#093A9D] to-[#2651A7]">
+                        <span className="text-blue-600">
                             AutoFix
                         </span>
                     </h1>
-                    <p className="text-[#6B7280] max-w-2xl mx-auto text-lg leading-relaxed font-poppins">
+                    <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed font-poppins">
                         Connecting vehicle owners with trusted service professionals transparent, reliable, and built for Sri Lanka.
                     </p>
                 </section>
 
                 {/* ── Stats strip ──────────────────────────────────── */}
                 <section className="max-w-4xl mx-auto px-6 mb-16">
-                    <div className="rounded-2xl border border-white/10   flex flex-wrap justify-center divide-x ]">
+                    <div className="rounded-2xl bg-white border border-gray-200 shadow-sm flex flex-wrap justify-center divide-x divide-gray-100 overflow-hidden">
                         <Stat value="500+" label="Service Providers" />
                         <Stat value="12K+" label="Happy Customers" />
                         <Stat value="25+" label="Cities Covered" />
@@ -52,12 +40,12 @@ export default function AboutPage() {
                 <section className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
                     {/* Our Mission */}
                     <GlassCard icon={Target} title="Our Mission">
-                        <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                        <p className="text-gray-600 text-sm leading-relaxed mb-4">
                             AutoFix connects vehicle owners with trusted service providers across Sri Lanka.
                             Our mission is to make vehicle maintenance simple, transparent, and reliable for
                             everyone in our community.
                         </p>
-                        <p className="text-slate-400 text-sm leading-relaxed">
+                        <p className="text-gray-600 text-sm leading-relaxed">
                             We're building a platform where quality service providers can grow their businesses
                             while customers easily find and book reliable vehicle services.
                         </p>
@@ -65,7 +53,7 @@ export default function AboutPage() {
 
                     {/* Get in Touch */}
                     <GlassCard icon={Mail} title="Get in Touch">
-                        <p className="text-slate-400 text-sm mb-6">
+                        <p className="text-gray-600 text-sm mb-6">
                             Have questions or want to partner with us? We'd love to hear from you.
                         </p>
                         <div className="space-y-4">
@@ -75,12 +63,12 @@ export default function AboutPage() {
                                 { icon: MapPin, label: 'Location', value: 'Colombo, Sri Lanka' },
                             ].map(({ icon: Icon, label, value }) => (
                                 <div key={label} className="flex items-center gap-4">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center shrink-0">
-                                        <Icon size={14} className="text-blue-400" />
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
+                                        <Icon size={14} className="text-blue-600" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</p>
-                                        <p className="text-sm text-slate-400">{value}</p>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</p>
+                                        <p className="text-sm text-gray-800">{value}</p>
                                     </div>
                                 </div>
                             ))}
@@ -90,9 +78,8 @@ export default function AboutPage() {
 
                 {/* ── Values strip ─────────────────────────────────── */}
                 <section className="max-w-5xl mx-auto px-6 mb-16">
-                    <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-                        <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
-                        <h2 className="text-center text-lg font-bold text-white mb-6">
+                    <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+                        <h2 className="text-center text-xl font-bold text-gray-900 mb-6">
                             What drives us every day
                         </h2>
                         <div className="flex flex-wrap justify-center gap-3">
