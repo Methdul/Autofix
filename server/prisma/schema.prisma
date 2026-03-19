@@ -10,21 +10,22 @@ datasource db {
 /// User model
 /// Represents all users in the system (both owners and providers)
 model User {
-  id                   String           @id @default(uuid())
-  email                String           @unique
-  password             String
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  password             String    // Stored as hashed value
   name                 String
   role                 UserRole
-  phone                String?
-  district             String?
-  city                 String?
-  passwordResetToken   String?          @unique
-  passwordResetExpires DateTime?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  providerBookings     Booking[]
-  providerProfile      ProviderProfile?
-  vehicles             Vehicle[]
+  phone                String?   // Optional contact number
+  district             String?   // Optional district/region
+  city                 String?   // Optional city
+  passwordResetToken   String?   @unique  // Hashed reset token
+  passwordResetExpires DateTime?          // Token expiry timestamp
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  vehicles             Vehicle[]        // One Owner -> Many Vehicles
+  providerBookings     Booking[]        // Bookings where user is provider
+  providerProfile      ProviderProfile? // Provider's business profile
+  notifications        Notification[]   // Notifications received by the user
 
   @@map("users")
 }
@@ -34,14 +35,15 @@ model User {
 model Vehicle {
   id           String    @id @default(uuid())
   ownerId      String
-  make         String
-  model        String
+  make         String    // Manufacturer (e.g., Toyota)
+  model        String    // Model name
   year         Int
   licensePlate String    @unique
+  photoUrl     String?   // Optional vehicle photo URL
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  bookings     Booking[]
   owner        User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  bookings     Booking[] // Bookings for this vehicle
 
   @@map("vehicles")
 }
@@ -52,17 +54,19 @@ model Booking {
   id          String           @id @default(uuid())
   vehicleId   String
   providerId  String
-  serviceId   String?
-  timeSlot    String?
-  description String
-  serviceDate DateTime
-  status      BookingStatus    @default(PENDING)
+  serviceId   String?          // Optional link to a specific ProviderService
+  timeSlot       String?          // e.g. "10:00 AM"
+  description    String
+  serviceDate    DateTime
+  status         BookingStatus    @default(PENDING)
+  currentMileage Int?             // Mileage recorded at service time
+  serviceNote    String?          // Short description of work done by provider
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-  provider    User             @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  service     ProviderService? @relation(fields: [serviceId], references: [id])
   vehicle     Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  invoice     Invoice?
+  provider    User             @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  service     ProviderService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  invoice     Invoice?         // One-to-one relationship with Invoice
 
   @@map("bookings")
 }
@@ -70,20 +74,20 @@ model Booking {
 /// Provider Profile model
 /// Represents business details of a service provider
 model ProviderProfile {
-  id                  String            @id @default(uuid())
-  userId              String            @unique
+  id                  String          @id @default(uuid())
+  userId              String          @unique
   businessName        String
   category            ServiceCategory
-  streetAddress       String
-  district            String
-  city                String
-  businessDescription String?
-  registrationNumber  String?
-  photoUrl            String?
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  services            ProviderService[]
+  streetAddress       String          // Street-level address
+  district            String          // District/region
+  city                String          // City
+  businessDescription String?         // Optional business description
+  registrationNumber  String?         // Optional BR number
+  photoUrl            String?         // Optional profile photo URL
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services            ProviderService[] // One Provider -> Many Services
 
   @@map("provider_profiles")
 }
@@ -96,12 +100,12 @@ model ProviderService {
   name        String
   price       Decimal         @db.Decimal(10, 2)
   description String?
-  vehicleType String?
-  duration    Int?
+  vehicleType String?         // e.g. Car, Van, Truck, SUV, Sports Car
+  duration    Int?            // Estimated duration in minutes
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  bookings    Booking[]
   profile     ProviderProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  bookings    Booking[]       // Bookings for this specific service
 
   @@map("provider_services")
 }
@@ -110,10 +114,10 @@ model ProviderService {
 /// Represents billing documents for completed bookings
 model Invoice {
   id        String        @id @default(uuid())
-  bookingId String        @unique
+  bookingId String        @unique // One-to-one constraint
   amount    Decimal       @db.Decimal(10, 2)
-  status    InvoiceStatus @default(UNPAID)
-  items     Json
+  status    InvoiceStatus @default(DRAFT)
+  items     Json          // JSONB column for price snapshot
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   booking   Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
@@ -132,6 +136,21 @@ model ContactMessage {
   createdAt DateTime @default(now())
 
   @@map("contact_messages")
+}
+
+/// Notification model
+/// Stores in-app notifications sent to providers when a booking is made
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String            // The user (provider) who receives the notification
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  bookingId String?           // Optional link to the related booking
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
 }
 
 /// User role enumeration
@@ -164,6 +183,8 @@ enum ServiceCategory {
 /// Invoice status enumeration
 /// Represents the payment status of an invoice
 enum InvoiceStatus {
+  DRAFT
   UNPAID
+  PAYMENT_PENDING
   PAID
 }
