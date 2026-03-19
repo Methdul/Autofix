@@ -1,8 +1,3 @@
-/**
- * Vehicle Controller
- * Coordinates HTTP requests for vehicle management.
- * Interfaces between the API routing layer and the Vehicle Service.
- */
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../common/middleware/auth.middleware';
 import { VehicleService } from './vehicle.service';
@@ -26,8 +21,6 @@ export async function addVehicleHandler(
 ): Promise<void> {
     try {
         const ownerId = req.user!.userId;
-        //validation check
-        if (!ownerId) throw new Error('User not authenticated');
         const data: CreateVehicleDTO = req.body;
 
         const vehicle = await vehicleService.addVehicle(ownerId, data);
@@ -50,13 +43,59 @@ export async function getMyVehiclesHandler(
     res: Response
 ): Promise<void> {
     try {
-        const ownerId = req.user?.userId;
-        if (!ownerId) throw new Error('User not authenticated');
+        const ownerId = req.user!.userId;
         const vehicles = await vehicleService.getMyVehicles(ownerId);
         res.status(200).json(vehicles);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to fetch vehicles';
         res.status(500).json({ error: message });
+    }
+}
+
+/**
+ * Handle getting a single vehicle's details
+ * Protected: Owner only
+ */
+export async function getVehicleDetailsHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const ownerId = req.user!.userId;
+        const vehicleId = req.params.id;
+        const vehicle = await vehicleService.getVehicleById(vehicleId, ownerId);
+        res.status(200).json(vehicle);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to fetch vehicle details';
+        res.status(404).json({ error: message });
+    }
+}
+
+/**
+ * Handle updating a vehicle's photo
+ * Protected: Owner only
+ */
+export async function updateVehiclePhotoHandler(
+    req: any, // Change 'AuthenticatedRequest' to 'any' here
+    res: Response
+): Promise<void> {
+    try {
+        const ownerId = req.user!.userId;
+        const vehicleId = req.params.id;
+        const file = req.file; // Now the Watchman will allow this!
+
+        if (!file) {
+            res.status(400).json({ error: 'Photo file is required' });
+            return;
+        }
+
+        const photoUrl = `/uploads/${file.filename}`;
+
+        const vehicle = await vehicleService.updateVehiclePhoto(vehicleId, ownerId, photoUrl);
+        res.status(200).json(vehicle);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to update vehicle photo';
+        res.status(400).json({ error: message });
     }
 }
 
@@ -72,14 +111,34 @@ export async function deleteVehicleHandler(
     res: Response
 ): Promise<void> {
     try {
-        const ownerId = req.user?.userId;
-        if (!ownerId) throw new Error('User not authenticated');
+        const ownerId = req.user!.userId;
         const vehicleId = req.params.id;
 
         await vehicleService.deleteVehicle(vehicleId, ownerId);
         res.status(200).json({ message: 'Vehicle deleted successfully' });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to delete vehicle';
+        res.status(400).json({ error: message });
+    }
+}
+
+/**
+ * Handle updating vehicle information
+ * Protected: Owner only
+ */
+export async function updateVehicleHandler(
+    req: AuthenticatedRequest,
+    res: Response
+): Promise<void> {
+    try {
+        const ownerId = req.user!.userId;
+        const vehicleId = req.params.id;
+        const data = req.body;
+
+        const vehicle = await vehicleService.updateVehicle(vehicleId, ownerId, data);
+        res.status(200).json(vehicle);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to update vehicle';
         res.status(400).json({ error: message });
     }
 }
