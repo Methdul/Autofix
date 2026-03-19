@@ -13,9 +13,9 @@ export default function GlassCard({ icon: Icon, title, children }: GlassCardProp
             <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
             <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center group-hover:bg-blue-500/25 transition-colors">
-                    <Icon size={20} className="text-blue-400" />
+                    <Icon size={20} className="text-[#2651A7]" />
                 </div>
-                <h2 className="text-xl font-bold text-white">{title}</h2>
+                <h2 className="text-xl font-bold text-[#333842]/90">{title}</h2>
             </div>
             {children}
         </div>
