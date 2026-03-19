@@ -14,6 +14,7 @@ import BusinessRegisterPage from './pages/auth/BusinessRegisterPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import ChatbotWidget from './components/chatbot/ChatbotWidget';
+import ProviderDashboard from './pages/dashboard/provider/ProviderDashboard';
 
 
 /**
@@ -26,11 +27,15 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Auth routes - no navbar/footer */}
+
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/register/business" element={<BusinessRegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+
+          {/* Dashboard routes - no navbar/footer, dashboard has its own sidebar */}
+          <Route path="/dashboard/provider" element={<ProviderDashboard />} />
 
           {/* Main routes - with navbar/footer */}
           <Route path="/*" element={
