@@ -13,6 +13,7 @@ import { AuthProvider } from './context/AuthContext';
 import BusinessRegisterPage from './pages/auth/BusinessRegisterPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import ChatbotWidget from './components/chatbot/ChatbotWidget';
 
 
 /**
@@ -51,6 +52,7 @@ function App() {
 
         </Routes>
       </BrowserRouter>
+      <ChatbotWidget />
     </AuthProvider >
 
   );
