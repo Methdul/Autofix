@@ -8,14 +8,12 @@ interface GlassCardProps {
 
 export default function GlassCard({ icon: Icon, title, children }: GlassCardProps) {
     return (
-        <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:border-blue-500/40 hover:bg-white/10 transition-all duration-300 group">
-            {/* Blue glow accent */}
-            <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
+        <div className="relative rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center group-hover:bg-blue-500/25 transition-colors">
-                    <Icon size={20} className="text-[#2651A7]" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
+                    <Icon size={20} className="text-blue-600" />
                 </div>
-                <h2 className="text-xl font-bold text-[#333842]/90">{title}</h2>
+                <h2 className="text-xl font-bold text-gray-900">{title}</h2>
             </div>
             {children}
         </div>
