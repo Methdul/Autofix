@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../components/auth/AuthLayout';
 import Button from '../../components/ui/Button';
 import { useAuth } from '../../hooks/useAuth';
-import ProviderCallout from './ProviderCallout';
-import CustomerFormFields from './CustomerFormFields';
+import ProviderCallout from '../../components/auth/ProviderCallout';
+import CustomerFormFields from '../../components/auth/CustomerFormFields';
 
 /**
  * Customer registration page component
