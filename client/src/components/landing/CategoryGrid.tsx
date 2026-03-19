@@ -1,61 +1,193 @@
-import { Wrench, Car, Droplet, Settings, Sparkles, Gauge } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-const categories = [
-    { icon: Wrench, title: 'General Repairs', accent: 'from-blue-500 to-blue-700', glow: 'rgba(59,130,246,0.4)' },
-    { icon: Car, title: 'Full Service', accent: 'from-emerald-500 to-emerald-700', glow: 'rgba(16,185,129,0.4)' },
-    { icon: Droplet, title: 'Car Wash & Detailing', accent: 'from-cyan-500 to-cyan-700', glow: 'rgba(6,182,212,0.4)' },
-    { icon: Settings, title: 'Engine Work', accent: 'from-violet-500 to-violet-700', glow: 'rgba(139,92,246,0.4)' },
-    { icon: Sparkles, title: 'Paint & Body', accent: 'from-pink-500 to-pink-700', glow: 'rgba(236,72,153,0.4)' },
-    { icon: Gauge, title: 'Diagnostics', accent: 'from-orange-500 to-orange-700', glow: 'rgba(249,115,22,0.4)' },
-];
+import { Wrench, Droplet, Car, Settings, Sparkle, Activity } from "lucide-react";
 
 export default function CategoryGrid() {
     return (
-        <section className="py-24 px-6">
-            <div className="max-w-7xl mx-auto">
+        <section className="bg-[#FAF9F6] py-32 px-6 relative font-poppins text-gray-900 border-t border-gray-100">
+            {/* Background SVG curves to mimic the reference image */}
+            <div className="absolute inset-y-0 left-0 w-1/2 pointer-events-none z-0">
+                <svg
+                    className="w-full h-full opacity-60"
+                    viewBox="0 0 500 800"
+                    fill="none"
+                    preserveAspectRatio="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M-50,200 C150,200 350,300 500,320"
+                        stroke="#093A9D"
+                        strokeWidth="1.5"
+                    />
+                    <path
+                        d="M-50,230 C200,280 300,330 500,320"
+                        stroke="#4f72b8ff"
+                        strokeWidth="1"
+                    />
+                    <path
+                        d="M-50,700 C200,600 300,500 500,480"
+                        stroke="#4f72b8ff"
+                        strokeWidth="1.5"
+                    />
+                    <path
+                        d="M-50,670 C150,600 350,520 500,480"
+                        stroke="#4f72b8ff"
+                        strokeWidth="1"
+                    />
+                </svg>
+            </div>
 
-                {/* Section header */}
-                <div className="text-center mb-14">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-4 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300 text-xs font-semibold uppercase tracking-widest">
-                        What we offer
+            <div className="max-w-6xl mx-auto flex flex-col md:flex-row relative z-10 gap-16 md:gap-0">
+                {/* Left side: Heading */}
+                <div className="md:w-1/2 md:pr-16">
+                    <div className="sticky top-32 md:top-64 pb-16 md:pb-0 z-20">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full border border-[#2651A7]/40 bg-blue-500/5 text-[#2651A7]/80 text-xs font-semibold uppercase tracking-widest backdrop-blur-sm">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                            WHAT WE OFFER
+                        </div>
+                        <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-[#333842] leading-[1.1]">
+                            Service<br />
+                            Categories.
+                        </h2>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Service Categories</h2>
-                    <p className="text-slate-400 max-w-xl mx-auto text-sm leading-relaxed">
-                        Browse our wide range of automotive services, each delivered by verified professionals.
-                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {categories.map(({ icon: Icon, title, accent, glow }) => (
-                        <Link
-                            to={`/providers?type=${encodeURIComponent(title)}`}
-                            key={title}
-                            className="relative group rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-8 hover:border-white/20 hover:bg-white/10 transition-all duration-300 overflow-hidden cursor-pointer"
-                        >
-                            {/* Top accent line */}
-                            <div className={`absolute -top-px left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent`} />
+                {/* Right side: Informational paragraphs */}
+                <div className="md:w-1/2 relative md:pl-0">
+                    {/* Main vertical line */}
+                    <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-200 hidden md:block"></div>
 
-                            {/* Icon */}
-                            <div
-                                className={`w-14 h-14 rounded-xl bg-gradient-to-br ${accent} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}
-                                style={{ boxShadow: `0 0 20px ${glow}` }}
-                            >
-                                <Icon className="text-white" size={28} />
+                    <div className="flex flex-col gap-12 md:gap-16 py-4 md:py-8">
+                        {/* Block 1 */}
+                        <div className="relative md:pl-12 flex items-start gap-8">
+                            {/* Horizontal connector line */}
+                            <div className="absolute left-0 top-5 w-8 h-px bg-gray-200 hidden md:block"></div>
+
+                            {/* Icon on the left */}
+                            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#2651A7]/10 text-[#2651A7] p-3">
+                                <Wrench size={28} strokeWidth={2.0} />
                             </div>
 
-                            <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
-                            <p className="text-slate-400 text-sm leading-relaxed">
-                                Professional {title.toLowerCase()} by verified providers across Sri Lanka.
-                            </p>
+                            {/* Text on the right */}
+                            <div className="flex flex-col">
+                                <p className="text-[#333842] text-[20px] leading-relaxed font-medium">
+                                    General Repairs
+                                </p>
+                                <p className="text-[#888] text-[14px] leading-snug mt-4 max-w-xs">
+                                    Professional general repairs by verified providers across Sri Lanka
+                                </p>
+                            </div>
 
-                            {/* Hover glow */}
-                            <div
-                                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"
-                                style={{ background: `radial-gradient(ellipse at bottom left, ${glow} 0%, transparent 70%)` }}
-                            />
-                        </Link>
-                    ))}
+                        </div>
+
+                        {/* Block 1 */}
+                        <div className="relative md:pl-12 flex items-start gap-8">
+                            {/* Horizontal connector line */}
+                            <div className="absolute left-0 top-5 w-8 h-px bg-gray-200 hidden md:block"></div>
+
+                            {/* Icon on the left */}
+                            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#2651A7]/10 text-[#2651A7] p-3">
+                                <Car size={28} strokeWidth={2.0} />
+                            </div>
+
+                            {/* Text on the right */}
+                            <div className="flex flex-col">
+                                <p className="text-[#333842] text-[20px] leading-relaxed font-medium">
+                                    Full Service
+                                </p>
+                                <p className="text-[#888] text-[14px] leading-snug mt-4 max-w-xs">
+                                    Professional full service by verified providers across Sri Lanka
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {/* Block 1 */}
+                        <div className="relative md:pl-12 flex items-start gap-8">
+                            {/* Horizontal connector line */}
+                            <div className="absolute left-0 top-5 w-8 h-px bg-gray-200 hidden md:block"></div>
+
+                            {/* Icon on the left */}
+                            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#2651A7]/10 text-[#2651A7] p-3">
+                                <Droplet size={28} strokeWidth={2.0} />
+                            </div>
+
+                            {/* Text on the right */}
+                            <div className="flex flex-col">
+                                <p className="text-[#333842] text-[20px] leading-relaxed font-medium">
+                                    Car Wash & Detailing
+                                </p>
+                                <p className="text-[#888] text-[14px] leading-snug mt-4 max-w-xs">
+                                    Professional car wash & detailing by verified providers across Sri Lanka
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {/* Block 1 */}
+                        <div className="relative md:pl-12 flex items-start gap-8">
+                            {/* Horizontal connector line */}
+                            <div className="absolute left-0 top-5 w-8 h-px bg-gray-200 hidden md:block"></div>
+
+                            {/* Icon on the left */}
+                            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#2651A7]/10 text-[#2651A7] p-3">
+                                <Settings size={28} strokeWidth={2.0} />
+                            </div>
+
+                            {/* Text on the right */}
+                            <div className="flex flex-col">
+                                <p className="text-[#333842] text-[20px] leading-relaxed font-medium">
+                                    Engine Work
+                                </p>
+                                <p className="text-[#888] text-[14px] leading-snug mt-4 max-w-xs">
+                                    Professional engine work by verified providers across Sri Lanka
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {/* Block 1 */}
+                        <div className="relative md:pl-12 flex items-start gap-8">
+                            {/* Horizontal connector line */}
+                            <div className="absolute left-0 top-5 w-8 h-px bg-gray-200 hidden md:block"></div>
+
+                            {/* Icon on the left */}
+                            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#2651A7]/10 text-[#2651A7] p-3">
+                                <Sparkle size={28} strokeWidth={2.0} />
+                            </div>
+
+                            {/* Text on the right */}
+                            <div className="flex flex-col">
+                                <p className="text-[#333842] text-[20px] leading-relaxed font-medium">
+                                    Paint & Body Work
+                                </p>
+                                <p className="text-[#888] text-[14px] leading-snug mt-4 max-w-xs">
+                                    Professional paint & body work by verified providers across Sri Lanka
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {/* Block 1 */}
+                        <div className="relative md:pl-12 flex items-start gap-8">
+                            {/* Horizontal connector line */}
+                            <div className="absolute left-0 top-5 w-8 h-px bg-gray-200 hidden md:block"></div>
+
+                            {/* Icon on the left */}
+                            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#2651A7]/10 text-[#2651A7] p-3">
+                                <Activity size={28} strokeWidth={2.0} />
+                            </div>
+
+                            {/* Text on the right */}
+                            <div className="flex flex-col">
+                                <p className="text-[#333842] text-[20px] leading-relaxed font-medium">
+                                    Diagnostics
+                                </p>
+                                <p className="text-[#888] text-[14px] leading-snug mt-4 max-w-xs">
+                                    Professional diagnostics by verified providers across Sri Lanka
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

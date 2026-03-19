@@ -1,7 +1,7 @@
 import Hero from '../components/landing/Hero';
 import CategoryGrid from '../components/landing/CategoryGrid';
-import ProcessFlow from '../components/landing/ProcessFlow';
 import DualCTA from '../components/landing/DualCTA';
+import Benefits from '../components/landing/Benifits';
 
 
 /**
@@ -13,7 +13,8 @@ export default function LandingPage() {
         <div
             className="min-h-screen relative"
             style={{
-                backgroundImage: 'url(/Gemini_Generated_Image_b3barcb3barcb3ba.png)',
+                //backgroundImage: 'url(/Gemini_Generated_Image_b3barcb3barcb3ba.png)',
+                backgroundImage: 'linear-gradient(to right, rgba(254, 254, 255, 0.97), rgba(254, 254, 255, 0.97))',
                 backgroundAttachment: 'fixed',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -21,11 +22,11 @@ export default function LandingPage() {
             }}
         >
             {/* Dark overlay for readability across all sections */}
-            <div className="absolute inset-0 bg-black/55 pointer-events-none" />
+            {/* <div className="absolute inset-0 bg-black/55 pointer-events-none" /> */}
             <div className="relative z-10">
                 <Hero />
                 <CategoryGrid />
-                <ProcessFlow />
+                <Benefits />
                 <DualCTA />
             </div>
         </div>

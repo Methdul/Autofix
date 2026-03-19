@@ -29,3 +29,4 @@ authRoutes.post('/forgot-password', forgotPasswordHandler);
 authRoutes.post('/reset-password', resetPasswordHandler);
 
 export default authRoutes;
+
