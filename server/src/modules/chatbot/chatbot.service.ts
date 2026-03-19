@@ -1,10 +1,4 @@
 import OpenAI from 'openai';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-
-// Force load env from src/.env because it wasn't picked up by the main application
-dotenv.config({ path: path.join(process.cwd(), 'src', '.env') });
-dotenv.config({ path: path.join(process.cwd(), '.env') }); // Fallback
 
 let client: OpenAI;
 
