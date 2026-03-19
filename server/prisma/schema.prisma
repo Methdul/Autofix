@@ -40,7 +40,9 @@ enum ServiceCategory {
 /// Invoice status enumeration
 /// Represents the payment status of an invoice
 enum InvoiceStatus {
+  DRAFT
   UNPAID
+  PAYMENT_PENDING
   PAID
 }
 
@@ -62,6 +64,7 @@ model User {
   vehicles             Vehicle[]        // One Owner -> Many Vehicles
   providerBookings     Booking[]        // Bookings where user is provider
   providerProfile      ProviderProfile? // Provider's business profile
+  notifications        Notification[]   // Notifications received by the user
 
   @@map("users")
 }
@@ -75,6 +78,7 @@ model Vehicle {
   model        String    // Model name
   year         Int
   licensePlate String    @unique
+  photoUrl     String?   // Optional vehicle photo URL
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   owner        User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -90,10 +94,12 @@ model Booking {
   vehicleId   String
   providerId  String
   serviceId   String?          // Optional link to a specific ProviderService
-  timeSlot    String?          // e.g. "10:00 AM"
-  description String
-  serviceDate DateTime
-  status      BookingStatus    @default(PENDING)
+  timeSlot       String?          // e.g. "10:00 AM"
+  description    String
+  serviceDate    DateTime
+  status         BookingStatus    @default(PENDING)
+  currentMileage Int?             // Mileage recorded at service time
+  serviceNote    String?          // Short description of work done by provider
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   vehicle     Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
@@ -149,7 +155,7 @@ model Invoice {
   id        String        @id @default(uuid())
   bookingId String        @unique // One-to-one constraint
   amount    Decimal       @db.Decimal(10, 2)
-  status    InvoiceStatus @default(UNPAID)
+  status    InvoiceStatus @default(DRAFT)
   items     Json          // JSONB column for price snapshot
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
@@ -169,4 +175,19 @@ model ContactMessage {
   createdAt DateTime @default(now())
 
   @@map("contact_messages")
+}
+
+/// Notification model
+/// Stores in-app notifications sent to providers when a booking is made
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String            // The user (provider) who receives the notification
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  bookingId String?           // Optional link to the related booking
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
 }
