@@ -1,6 +1,3 @@
-// Prisma schema for Vehicle Service Ecosystem
-// Defines database models and relationships
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,42 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-/// User role enumeration
-/// Defines available user types in the system
-enum UserRole {
-  OWNER    // Vehicle owner who requests services
-  PROVIDER // Service provider who offers services
-}
-
-/// Booking status enumeration
-/// Represents the lifecycle states of a service booking
-enum BookingStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-/// Service category enumeration
-/// Defines the type of service provider
-enum ServiceCategory {
-  GARAGE
-  CARRIER
-  DETAILER
-  TYRE_HOUSE
-}
-
-/// Invoice status enumeration
-/// Represents the payment status of an invoice
-enum InvoiceStatus {
-  DRAFT
-  UNPAID
-  PAYMENT_PENDING
-  PAID
 }
 
 /// User model
@@ -117,6 +78,7 @@ model ProviderProfile {
   userId              String          @unique
   businessName        String
   category            ServiceCategory
+  phone               String?         // Business contact number
   streetAddress       String          // Street-level address
   district            String          // District/region
   city                String          // City
@@ -190,4 +152,40 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+/// User role enumeration
+/// Defines available user types in the system
+enum UserRole {
+  OWNER
+  PROVIDER
+}
+
+/// Booking status enumeration
+/// Represents the lifecycle states of a service booking
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+/// Service category enumeration
+/// Defines the type of service provider
+enum ServiceCategory {
+  GARAGE
+  CARRIER
+  DETAILER
+  TYRE_HOUSE
+}
+
+/// Invoice status enumeration
+/// Represents the payment status of an invoice
+enum InvoiceStatus {
+  DRAFT
+  UNPAID
+  PAYMENT_PENDING
+  PAID
 }

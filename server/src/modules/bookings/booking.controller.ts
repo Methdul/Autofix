@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../../common/middleware/auth.middleware';
 import { BookingService } from './booking.service';
 import { BookingRepository } from './booking.repository';
-import { CreateBookingDTO, UpdateStatusDTO } from '../../types/booking.types';
+import { CreateBookingDTO, UpdateStatusDTO, UpdateServiceRecordDTO } from '../../types/booking.types';
 
 // Initialize repositories and services Dependencies Inversion
 const bookingRepository = new BookingRepository();
@@ -22,6 +22,7 @@ export async function createBookingHandler(
             res.status(400).json({ error: 'Missing required fields' });
             return;
         }
+        // serviceId and timeSlot are optional and correctly passed in data
         const booking = await bookingService.createBooking(ownerId, data);
         res.status(201).json(booking);
     } catch (error) {
@@ -48,20 +49,30 @@ export async function getProviderBookingsHandler(
 }
 
 /**
- * Get owner's bookings - GET /api/bookings/owner (Owner only)
+ * Get current user's bookings (Owner) - GET /api/bookings/me
  * @param {AuthenticatedRequest} req @param {Response} res
  */
-export async function getOwnerBookingsHandler(
+export async function getMyBookingsHandler(
     req: AuthenticatedRequest, res: Response
 ): Promise<void> {
     try {
-        const ownerId = req.user!.userId;
-        const bookings = await bookingService.getOwnerBookings(ownerId);
+        const userId = req.user!.userId;
+        const bookings = await bookingService.getOwnerBookings(userId);
         res.status(200).json(bookings);
     } catch (error) {
         const msg = error instanceof Error ? error.message : 'Failed to fetch bookings';
         res.status(500).json({ error: msg });
     }
+}
+
+/**
+ * Get owner's bookings - GET /api/bookings/owner (Deprecated in favor of /me)
+ * @param {AuthenticatedRequest} req @param {Response} res
+ */
+export async function getOwnerBookingsHandler(
+    req: AuthenticatedRequest, res: Response
+): Promise<void> {
+    return getMyBookingsHandler(req, res);
 }
 
 /**
@@ -84,5 +95,54 @@ export async function updateStatusHandler(
     } catch (error) {
         const msg = error instanceof Error ? error.message : 'Failed to update status';
         res.status(400).json({ error: msg });
+    }
+}
+
+/**
+ * Get a specific booking by ID - GET /api/bookings/:id
+ * @param {AuthenticatedRequest} req @param {Response} res
+ */
+export async function getBookingHandler(
+    req: AuthenticatedRequest, res: Response
+): Promise<void> {
+    try {
+        const userId = req.user!.userId;
+        const bookingId = req.params.id;
+        const booking = await bookingService.getBookingById(bookingId, userId);
+
+        if (!booking) {
+            res.status(404).json({ error: 'Booking not found' });
+            return;
+        }
+
+        res.status(200).json(booking);
+    } catch (error) {
+        const msg = error instanceof Error ? error.message : 'Failed to fetch booking';
+        const statusCode = msg.includes('Access denied') ? 403 : 500;
+        res.status(statusCode).json({ error: msg });
+    }
+}
+
+/**
+ * Update service record (mileage + note) - PATCH /api/bookings/:id/service-record (Provider only)
+ * @param {AuthenticatedRequest} req @param {Response} res
+ */
+export async function updateServiceRecordHandler(
+    req: AuthenticatedRequest, res: Response
+): Promise<void> {
+    try {
+        const providerId = req.user!.userId;
+        const bookingId = req.params.id;
+        const { currentMileage, serviceNote }: UpdateServiceRecordDTO = req.body;
+        if (!currentMileage || typeof currentMileage !== 'number') {
+            res.status(400).json({ error: 'currentMileage is required and must be a number' });
+            return;
+        }
+        const booking = await bookingService.updateServiceRecord(bookingId, providerId, currentMileage, serviceNote);
+        res.status(200).json(booking);
+    } catch (error) {
+        const msg = error instanceof Error ? error.message : 'Failed to update service record';
+        const statusCode = msg.includes('Access denied') ? 403 : 400;
+        res.status(statusCode).json({ error: msg });
     }
 }

@@ -1,0 +1,7 @@
+
+> autofix-backend@1.0.0 build
+> tsc
+
+src/modules/bookings/booking.repository.ts(71,21): error TS2353: Object literal may only specify known properties, and 'currentMileage' does not exist in type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'.
+src/modules/bookings/booking.service.ts(62,31): error TS2339: Property 'notification' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+src/modules/bookings/booking.service.ts(135,35): error TS2339: Property 'notification' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.

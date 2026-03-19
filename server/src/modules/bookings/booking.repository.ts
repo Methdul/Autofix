@@ -10,8 +10,12 @@ export class BookingRepository {
     async create(data: CreateBookingDTO): Promise<Booking> {
         const booking = await this.prisma.booking.create({
             data: {
-                vehicleId: data.vehicleId, providerId: data.providerId,
-                description: data.description, serviceDate: new Date(data.serviceDate),
+                vehicleId: data.vehicleId,
+                providerId: data.providerId,
+                serviceId: data.serviceId,
+                timeSlot: data.timeSlot,
+                description: data.description,
+                serviceDate: new Date(data.serviceDate),
             },
         });
         return this.mapToBooking(booking);
@@ -21,7 +25,7 @@ export class BookingRepository {
     async findById(id: string): Promise<BookingWithDetails | null> {
         const booking = await this.prisma.booking.findUnique({
             where: { id },
-            include: { vehicle: { include: { owner: true } }, provider: true },
+            include: { vehicle: { include: { owner: true } }, provider: true, service: true, invoice: true },
         });
         return booking ? this.mapToBookingWithDetails(booking) : null;
     }
@@ -30,8 +34,8 @@ export class BookingRepository {
     async findByProvider(providerId: string): Promise<BookingWithDetails[]> {
         const bookings = await this.prisma.booking.findMany({
             where: { providerId },
-            include: { vehicle: { include: { owner: true } }, provider: true },
-            orderBy: { createdAt: 'desc' },
+            include: { vehicle: { include: { owner: true } }, provider: true, service: true, invoice: true },
+            orderBy: { serviceDate: 'asc' },
         });
         return bookings.map(b => this.mapToBookingWithDetails(b));
     }
@@ -40,8 +44,13 @@ export class BookingRepository {
     async findByOwner(ownerId: string): Promise<BookingWithDetails[]> {
         const bookings = await this.prisma.booking.findMany({
             where: { vehicle: { ownerId } },
-            include: { vehicle: { include: { owner: true } }, provider: true },
-            orderBy: { createdAt: 'desc' },
+            include: {
+                vehicle: true,
+                provider: true,
+                service: true,
+                invoice: true
+            },
+            orderBy: { serviceDate: 'desc' },
         });
         return bookings.map(b => this.mapToBookingWithDetails(b));
     }
@@ -55,11 +64,24 @@ export class BookingRepository {
         return this.mapToBooking(booking);
     }
 
+    /** @param {string} id @param {number} currentMileage @param {string|undefined} serviceNote @returns {Promise<Booking>} Updated booking */
+    async updateServiceRecord(id: string, currentMileage: number, serviceNote?: string): Promise<Booking> {
+        const booking = await this.prisma.booking.update({
+            where: { id },
+            data: { currentMileage, serviceNote: serviceNote ?? null },
+        });
+        return this.mapToBooking(booking);
+    }
+
     private mapToBooking(b: any): Booking {
         return {
             id: b.id, vehicleId: b.vehicleId, providerId: b.providerId,
+            serviceId: b.serviceId, timeSlot: b.timeSlot,
             description: b.description, serviceDate: b.serviceDate,
-            status: b.status as BookingStatus, createdAt: b.createdAt, updatedAt: b.updatedAt,
+            status: b.status as BookingStatus,
+            currentMileage: b.currentMileage ?? null,
+            serviceNote: b.serviceNote ?? null,
+            createdAt: b.createdAt, updatedAt: b.updatedAt,
         };
     }
 
@@ -67,10 +89,17 @@ export class BookingRepository {
         return {
             ...this.mapToBooking(b),
             vehicle: b.vehicle ? {
-                make: b.vehicle.make, model: b.vehicle.model,
-                licensePlate: b.vehicle.licensePlate, ownerName: b.vehicle.owner?.name,
+                id: b.vehicle.id,
+                make: b.vehicle.make,
+                model: b.vehicle.model,
+                year: b.vehicle.year,
+                licensePlate: b.vehicle.licensePlate,
+                ownerName: b.vehicle.owner?.name,
+                ownerPhone: b.vehicle.owner?.phone,
             } : undefined,
             provider: b.provider ? { name: b.provider.name, email: b.provider.email } : undefined,
+            service: b.service ? { id: b.service.id, name: b.service.name, price: b.service.price } : undefined,
+            invoice: b.invoice ? { id: b.invoice.id, status: b.invoice.status, amount: b.invoice.amount } : undefined,
         };
     }
 }
