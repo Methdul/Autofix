@@ -42,7 +42,7 @@ vehicleRoutes.get('/:id', authorize([UserRole.OWNER]), getVehicleDetailsHandler)
  * @desc    Update vehicle photo
  * @access  Protected (Owner only)
  */
-vehicleRoutes.patch('/:id/photo', authorize([UserRole.OWNER]), uploadPhoto, updateVehiclePhotoHandler as any);
+vehicleRoutes.patch('/:id/photo', authorize([UserRole.OWNER]), uploadPhoto, updateVehiclePhotoHandler);
 
 /**
  * @route   PUT /api/vehicles/:id
