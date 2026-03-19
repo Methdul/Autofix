@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-//import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import LandingPage from './pages/LandingPage';
 import ProvidersPage from './pages/ProvidersPage';
-//import ServicesPage from './pages/ServicesPage';
+import ServicesPage from './pages/ServicesPage';
 import AboutPage from './pages/AboutPage';
 import ProviderProfilePage from './pages/ProviderProfilePage';
 import LoginPage from './pages/auth/LoginPage';
@@ -42,8 +41,7 @@ function App() {
                   <Route path="/providers" element={<ProvidersPage />} />
                   <Route path="/providers/:id" element={<ProviderProfilePage />} />
                   <Route path="/about" element={<AboutPage />} />
-                  {/*<Route path="/services" element={<ServicesPage />} />
-                  <Route path="/contact" element={<AboutPage />} />*/}
+                  <Route path="/services" element={<ServicesPage />} />
                 </Routes>
               </main>
               <Footer />

@@ -53,6 +53,37 @@ export class VehicleService {
     }
 
     /**
+     * Get a vehicle by ID for an owner
+     * 
+     * @param {string} id - The vehicle ID
+     * @param {string} ownerId - The owner's ID for authorization
+     * @returns {Promise<Vehicle>} The vehicle
+     * @throws {Error} If not found or access denied
+     */
+    async getVehicleById(id: string, ownerId: string): Promise<Vehicle> {
+        const vehicle = await this.vehicleRepository.findById(id);
+        if (!vehicle || vehicle.ownerId !== ownerId) {
+            throw new Error('Vehicle not found or access denied');
+        }
+        return vehicle;
+    }
+
+    /**
+     * Update vehicle photo
+     * 
+     * @param {string} id - The vehicle ID
+     * @param {string} ownerId - The owner's ID
+     * @param {string} photoUrl - The new photo URL
+     * @returns {Promise<Vehicle>} The updated vehicle
+     */
+    async updateVehiclePhoto(id: string, ownerId: string, photoUrl: string): Promise<Vehicle> {
+        // First check if vehicle exists and belongs to owner
+        await this.getVehicleById(id, ownerId);
+        
+        return this.vehicleRepository.update(id, { photoUrl });
+    }
+
+    /**
      * Delete a vehicle (only if owned by the user)
      * 
      * @param {string} vehicleId - The vehicle ID to delete
@@ -66,5 +97,29 @@ export class VehicleService {
             throw new Error('Vehicle not found or access denied');
         }
         return true;
+    }
+
+    /**
+     * Update vehicle information
+     * 
+     * @param {string} id - The vehicle ID
+     * @param {string} ownerId - The owner's ID
+     * @param {UpdateVehicleDTO} data - The data to update
+     * @returns {Promise<Vehicle>} The updated vehicle
+     * @throws {Error} If validation fails or access denied
+     */
+    async updateVehicle(id: string, ownerId: string, data: any): Promise<Vehicle> {
+        // First check if vehicle exists and belongs to owner
+        await this.getVehicleById(id, ownerId);
+
+        // Basic validation if fields are provided
+        if (data.year) {
+            const currentYear = new Date().getFullYear();
+            if (data.year < 1900 || data.year > currentYear + 1) {
+                throw new Error('Invalid vehicle year');
+            }
+        }
+
+        return this.vehicleRepository.update(id, data);
     }
 }

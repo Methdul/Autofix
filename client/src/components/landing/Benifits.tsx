@@ -80,10 +80,10 @@ export default function Benefits() {
 
             </div>
 
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-24 mt-44 ml-20">
+            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-24 mt-40">
 
                 {/* Left: Issue Cards */}
-                <div className="w-full md:w-[39%] flex flex-col gap-3 flex-shrink-0 ">
+                <div className="w-full md:w-[46%] flex flex-col gap-3 flex-shrink-0 ">
                     <img
                         src="/stats.png"
                         alt="Live Tracking image"
