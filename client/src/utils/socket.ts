@@ -17,7 +17,7 @@ class SocketClient {
             console.log('🔌 Connected to Socket.io server');
         });
 
-        this.socket.on('connect_error', (error) => {
+        this.socket.on('connect_error', (error: any) => {
             console.error('🔌 Socket connection error:', error);
         });
     }
