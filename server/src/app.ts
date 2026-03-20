@@ -10,6 +10,7 @@ import serviceRoutes from './modules/provider/service.routes';
 import invoiceRoutes from './modules/invoice/invoice.routes';
 import chatbotRoutes from './modules/chatbot/chatbot.routes';
 import contactRoutes from './modules/contact/contact.routes';
+import profileRoutes from './modules/profile/profile.routes';
 
 /**
  * Creates and configures the Express application
@@ -63,6 +64,7 @@ function configureRoutes(app: Application): void {
     app.use('/api/invoices', invoiceRoutes);
     app.use('/api/chatbot', chatbotRoutes);
     app.use('/api/contact', contactRoutes);
+    app.use('/api/profile', profileRoutes);
 }
 
 /**
