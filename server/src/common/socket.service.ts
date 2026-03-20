@@ -11,7 +11,12 @@ export class SocketService {
     static init(server: HttpServer): SocketServer {
         this.io = new SocketServer(server, {
             cors: {
-                origin: process.env.CLIENT_URL || 'http://localhost:5173',
+                origin: [
+                    'https://autofix-lilac.vercel.app',
+                    'https://autofix.lk',
+                    'https://www.autofix.lk',
+                    'http://localhost:5173'
+                ],
                 methods: ['GET', 'POST'],
                 credentials: true
             }

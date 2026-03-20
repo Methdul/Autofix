@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { createApp } from './app';
 import { PrismaService } from './common/prisma.service';
+import { SocketService } from './common/socket.service';
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,6 +21,9 @@ async function startServer(): Promise<void> {
             console.log(`🚀 Server running on port ${PORT}`);
             console.log(`📍 Health check: http://localhost:${PORT}/health`);
         });
+        
+        // Initialize Socket.io
+        SocketService.init(server);
 
         // Graceful shutdown handling
         setupGracefulShutdown(server);
