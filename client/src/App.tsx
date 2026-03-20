@@ -22,6 +22,8 @@ import OwnerDashboard from './pages/dashboard/owner/OwnerDashboard';
 import CreateBookingPage from './pages/bookings/CreateBookingPage';
 import MyVehicles from './pages/dashboard/owner/MyVehicles';
 import VehicleDetails from './pages/dashboard/owner/VehicleDetails';
+import ServiceHistory from './pages/dashboard/owner/ServiceHistory';
+
 
 
 /**
@@ -48,6 +50,7 @@ function App() {
           <Route path="/dashboard/owner" element={<OwnerDashboard />} />
           <Route path="/dashboard/owner/vehicles" element={<MyVehicles />} />
           <Route path="/dashboard/owner/vehicles/:id" element={<VehicleDetails />} />
+          <Route path="/dashboard/owner/history" element={<ServiceHistory />} />
 
           {/* Main routes - with navbar/footer */}
           <Route path="/*" element={
