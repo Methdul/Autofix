@@ -9,9 +9,10 @@ import { isServiceTimePassed } from '../../../../utils/date.util';
 interface BookingCardProps {
     booking: BookingResponse;
     onStatusUpdate: (id: string, newStatus: string) => void;
+    processing: boolean;
 }
 
-export default function BookingCard({ booking, onStatusUpdate }: BookingCardProps) {
+export default function BookingCard({ booking, onStatusUpdate, processing }: BookingCardProps) {
     const { vehicle, service, status } = booking;
     const date = new Date(booking.serviceDate).toLocaleDateString();
 
@@ -73,6 +74,7 @@ export default function BookingCard({ booking, onStatusUpdate }: BookingCardProp
                     booking={booking}
                     canStartService={canStartService}
                     onStatusUpdate={onStatusUpdate}
+                    processing={processing}
                     compact={true} // new optional prop for list view
                 />
 

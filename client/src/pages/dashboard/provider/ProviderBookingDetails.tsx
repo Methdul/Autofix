@@ -15,7 +15,7 @@ import { isServiceTimePassed } from '../../../utils/date.util';
 export default function ProviderBookingDetails() {
     const { id } = useParams<{ id: string }>();
     const { user } = useAuth();
-    const { booking, loading, error, handleStatusUpdate, refetch } = useProviderBooking(id);
+    const { booking, loading, processing, error, handleStatusUpdate, refetch } = useProviderBooking(id);
 
     if (loading) return <ProviderBookingLoading />;
     if (error || !booking) return <ProviderBookingError error={error} />;
@@ -46,6 +46,7 @@ export default function ProviderBookingDetails() {
                             booking={booking} status={status}
                             isProvider={user?.role === 'PROVIDER'} isOwner={user?.role === 'OWNER'}
                             canStartService={canStartService} onStatusUpdate={handleStatusUpdate} onInvoiceSuccess={refetch}
+                            processing={processing}
                         />
                     </div>
                 </div>

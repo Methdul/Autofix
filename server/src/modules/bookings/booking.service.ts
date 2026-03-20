@@ -113,6 +113,7 @@ export class BookingService {
         if (booking.providerId !== providerId) {
             throw new Error('Access denied. You are not assigned to this booking');
         }
+        if (booking.status === newStatus) return booking;
         validateStatusTransition(booking.status, newStatus);
         const updated = await this.bookingRepository.updateStatus(bookingId, newStatus);
 

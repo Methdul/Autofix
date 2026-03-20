@@ -22,7 +22,8 @@ export default function ProviderDashboard() {
         viewMode,
         setViewMode,
         metrics,
-        handleStatusUpdate
+        handleStatusUpdate,
+        processing
     } = useProviderDashboard();
 
     if (authLoading) {
@@ -93,7 +94,7 @@ export default function ProviderDashboard() {
                         </div>
                     ) : (
                         viewMode === 'list' ? (
-                            <BookingList bookings={filteredBookings} onStatusUpdate={handleStatusUpdate} />
+                            <BookingList bookings={filteredBookings} onStatusUpdate={handleStatusUpdate} processing={processing} />
                         ) : (
                             <CalendarView bookings={bookings} />
                         )

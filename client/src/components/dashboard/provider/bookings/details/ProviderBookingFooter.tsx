@@ -14,9 +14,10 @@ interface Props {
     canStartService: boolean;
     onStatusUpdate: (id: string, status: string) => void;
     onInvoiceSuccess: () => void;
+    processing: boolean;
 }
 
-export const ProviderBookingFooter: React.FC<Props> = ({ booking, status, isProvider, isOwner, canStartService, onStatusUpdate, onInvoiceSuccess }) => {
+export const ProviderBookingFooter: React.FC<Props> = ({ booking, status, isProvider, isOwner, canStartService, onStatusUpdate, onInvoiceSuccess, processing }) => {
     const [isServiceRecordOpen, setIsServiceRecordOpen] = useState(false);
     const [isGenerateOpen, setIsGenerateOpen] = useState(false);
     const [isViewerOpen, setIsViewerOpen] = useState(false);
@@ -29,7 +30,7 @@ export const ProviderBookingFooter: React.FC<Props> = ({ booking, status, isProv
     return (
         <div className="border-t border-slate-100 pt-8 mt-auto flex flex-col md:flex-row gap-4 items-center justify-end">
             <div className="w-full md:w-auto">
-                <BookingActions booking={booking} canStartService={canStartService} onStatusUpdate={onStatusUpdate} />
+                <BookingActions booking={booking} canStartService={canStartService} onStatusUpdate={onStatusUpdate} processing={processing} />
             </div>
 
             <div className="flex w-full md:w-auto gap-3">
