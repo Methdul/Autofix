@@ -21,6 +21,7 @@ import ProviderBookingDetails from './pages/dashboard/provider/ProviderBookingDe
 import OwnerDashboard from './pages/dashboard/owner/OwnerDashboard';
 import CreateBookingPage from './pages/bookings/CreateBookingPage';
 import MyVehicles from './pages/dashboard/owner/MyVehicles';
+import VehicleDetails from './pages/dashboard/owner/VehicleDetails';
 
 
 /**
@@ -46,6 +47,7 @@ function App() {
           <Route path="/dashboard/provider/settings" element={<ProfileSettings />} />
           <Route path="/dashboard/owner" element={<OwnerDashboard />} />
           <Route path="/dashboard/owner/vehicles" element={<MyVehicles />} />
+          <Route path="/dashboard/owner/vehicles/:id" element={<VehicleDetails />} />
 
           {/* Main routes - with navbar/footer */}
           <Route path="/*" element={
