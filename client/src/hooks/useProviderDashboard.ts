@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useAuth } from './useAuth';
+import { toast } from 'react-hot-toast';
 import { bookingApi } from '../api/booking.api';
 import { socketClient } from '../utils/socket';
 import type { BookingResponse } from '../api/booking.api';
@@ -52,10 +53,11 @@ export function useProviderDashboard() {
         setProcessing(true);
         try {
             await bookingApi.updateBookingStatus(id, status);
+            toast.success(`Booking ${status.toLowerCase()} successfully`);
             // Re-fetch after updating status
             fetchBookings();
         } catch (err: any) {
-            alert(err.response?.data?.error || 'Failed to update booking status');
+            toast.error(err.response?.data?.error || 'Failed to update booking status');
         } finally {
             setProcessing(false);
         }

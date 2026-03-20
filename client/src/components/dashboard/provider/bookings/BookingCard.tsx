@@ -5,6 +5,7 @@ import StatusBadge from '../../shared/common/StatusBadge';
 import InvoiceBadge from '../../shared/invoices/InvoiceBadge';
 import BookingActions from './BookingActions';
 import { isServiceTimePassed } from '../../../../utils/date.util';
+import { motion } from 'framer-motion';
 
 interface BookingCardProps {
     booking: BookingResponse;
@@ -20,7 +21,11 @@ export default function BookingCard({ booking, onStatusUpdate, processing }: Boo
     const canStartService = status === 'ACCEPTED' ? isServiceTimePassed(booking.serviceDate, booking.timeSlot) : false;
 
     return (
-        <div className="group relative bg-white/80 backdrop-blur-xl rounded-2xl p-4 flex flex-col md:flex-row md:items-center gap-6 border border-slate-200 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-300">
+        <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="group relative bg-white/80 backdrop-blur-xl rounded-2xl p-4 flex flex-col md:flex-row md:items-center gap-6 border border-slate-200 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-300"
+        >
             {/* Service & Schedule (Left Col) */}
             <div className="flex-1 min-w-[200px]">
                 <h3 className="text-lg font-bold text-slate-800 tracking-tight mb-2">
@@ -87,6 +92,6 @@ export default function BookingCard({ booking, onStatusUpdate, processing }: Boo
                     <ChevronRight className="w-5 h-5" />
                 </Link>
             </div>
-        </div>
+        </motion.div>
     );
 }
