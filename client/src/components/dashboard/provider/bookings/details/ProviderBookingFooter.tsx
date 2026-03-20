@@ -31,7 +31,7 @@ export const ProviderBookingFooter: React.FC<Props> = ({ booking, status, isProv
             <div className="w-full md:w-auto">
                 <BookingActions booking={booking} canStartService={canStartService} onStatusUpdate={onStatusUpdate} />
             </div>
-            
+
             <div className="flex w-full md:w-auto gap-3">
                 {status === 'COMPLETED' && isProvider && (!booking.invoice || booking.invoice.status === 'DRAFT') && (
                     <button
@@ -62,11 +62,11 @@ export const ProviderBookingFooter: React.FC<Props> = ({ booking, status, isProv
             />
 
             {/* Step 2: Invoice Modal (opens after service record is saved) */}
-            <GenerateInvoiceModal 
-                isOpen={isGenerateOpen} onClose={() => setIsGenerateOpen(false)} 
-                bookingId={booking.id} invoiceId={booking.invoice?.id} onSuccess={onInvoiceSuccess} 
+            <GenerateInvoiceModal
+                isOpen={isGenerateOpen} onClose={() => setIsGenerateOpen(false)}
+                bookingId={booking.id} invoiceId={booking.invoice?.id} onSuccess={onInvoiceSuccess}
             />
-            
+
             {isViewerOpen && (
                 <InvoiceViewer bookingId={booking.id} isOwner={isOwner} onClose={() => setIsViewerOpen(false)} />
             )}
