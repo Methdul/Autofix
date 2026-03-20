@@ -18,6 +18,7 @@ import ProviderDashboard from './pages/dashboard/provider/ProviderDashboard';
 import MyServices from './pages/dashboard/provider/MyServices';
 import ProfileSettings from './pages/dashboard/provider/ProfileSettings';
 import ProviderBookingDetails from './pages/dashboard/provider/ProviderBookingDetails';
+import OwnerDashboard from './pages/dashboard/owner/OwnerDashboard';
 
 
 
@@ -43,6 +44,8 @@ function App() {
           <Route path="/dashboard/provider/bookings/:id" element={<ProviderBookingDetails />} />
           <Route path="/dashboard/provider/services" element={<MyServices />} />
           <Route path="/dashboard/provider/settings" element={<ProfileSettings />} />
+
+          <Route path="/dashboard/owner" element={<OwnerDashboard />} />
 
 
           {/* Main routes - with navbar/footer */}
