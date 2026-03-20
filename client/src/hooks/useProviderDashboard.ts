@@ -8,6 +8,7 @@ export function useProviderDashboard() {
     const { user, token, loading: authLoading } = useAuth();
     const [bookings, setBookings] = useState<BookingResponse[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [processing, setProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
@@ -48,12 +49,15 @@ export function useProviderDashboard() {
     }, [token, user?.role, user?.id, fetchBookings]);
 
     const handleStatusUpdate = async (id: string, status: string) => {
+        setProcessing(true);
         try {
             await bookingApi.updateBookingStatus(id, status);
             // Re-fetch after updating status
             fetchBookings();
         } catch (err: any) {
             alert(err.response?.data?.error || 'Failed to update booking status');
+        } finally {
+            setProcessing(false);
         }
     };
 
@@ -92,6 +96,7 @@ export function useProviderDashboard() {
         setViewMode,
         metrics,
         handleStatusUpdate,
+        processing,
         fetchBookings
     };
 }

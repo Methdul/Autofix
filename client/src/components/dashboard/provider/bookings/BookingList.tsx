@@ -7,9 +7,10 @@ import { Calendar, FilterX } from 'lucide-react';
 interface BookingListProps {
     bookings: BookingResponse[];
     onStatusUpdate: (id: string, status: string) => void;
+    processing: boolean;
 }
 
-export default function BookingList({ bookings, onStatusUpdate }: BookingListProps) {
+export default function BookingList({ bookings, onStatusUpdate, processing }: BookingListProps) {
     const [activeTab, setActiveTab] = useState<'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'>('PENDING');
 
     const pendingBookings = useMemo(() => bookings.filter(b => b.status === 'PENDING'), [bookings]);
@@ -107,6 +108,7 @@ export default function BookingList({ bookings, onStatusUpdate }: BookingListPro
                             key={booking.id}
                             booking={booking}
                             onStatusUpdate={onStatusUpdate}
+                            processing={processing}
                         />
                     ))}
                 </div>
