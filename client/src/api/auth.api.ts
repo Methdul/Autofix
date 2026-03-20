@@ -2,7 +2,8 @@ import axios from 'axios';
 import type { LoginRequest, RegisterRequest, BusinessRegisterRequest, AuthResponse } from '../types/auth.types';
 
 /** Base API URL from environment variable or default to localhost */
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+export const API_URL = rawApiUrl.replace(/\/api$/, '').replace(/\/api\/$/, '');
 
 /**
  * Axios instance configured for API requests
