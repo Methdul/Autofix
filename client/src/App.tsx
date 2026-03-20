@@ -14,6 +14,13 @@ import BusinessRegisterPage from './pages/auth/BusinessRegisterPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import ChatbotWidget from './components/chatbot/ChatbotWidget';
+import ProviderDashboard from './pages/dashboard/provider/ProviderDashboard';
+import MyServices from './pages/dashboard/provider/MyServices';
+import ProfileSettings from './pages/dashboard/provider/ProfileSettings';
+import ProviderBookingDetails from './pages/dashboard/provider/ProviderBookingDetails';
+import OwnerDashboard from './pages/dashboard/owner/OwnerDashboard';
+import CreateBookingPage from './pages/bookings/CreateBookingPage';
+import MyVehicles from './pages/dashboard/owner/MyVehicles';
 
 
 /**
@@ -32,6 +39,14 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
+          {/* Dashboard routes - no navbar/footer, dashboard has its own sidebar */}
+          <Route path="/dashboard/provider" element={<ProviderDashboard />} />
+          <Route path="/dashboard/provider/bookings/:id" element={<ProviderBookingDetails />} />
+          <Route path="/dashboard/provider/services" element={<MyServices />} />
+          <Route path="/dashboard/provider/settings" element={<ProfileSettings />} />
+          <Route path="/dashboard/owner" element={<OwnerDashboard />} />
+          <Route path="/dashboard/owner/vehicles" element={<MyVehicles />} />
+
           {/* Main routes - with navbar/footer */}
           <Route path="/*" element={
             <div className="flex flex-col min-h-screen">
@@ -43,6 +58,7 @@ function App() {
                   <Route path="/providers/:id" element={<ProviderProfilePage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/book/:serviceId" element={<CreateBookingPage />} />
                   <Route path="/contact" element={<AboutPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
