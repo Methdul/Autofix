@@ -1,5 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { PrismaService } from './common/prisma.service';
 import authRoutes from './modules/auth/auth.routes';
@@ -46,6 +48,19 @@ function configureMiddleware(app: Application): void {
         'https://www.autofix.lk',
         'http://localhost:5173'
     ];
+
+    // Secure HTTP headers
+    app.use(helmet());
+
+    // Rate limiting to prevent brute-force attacks
+    const limiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // limit each IP to 100 requests per windowMs
+        message: { error: 'Too many requests, please try again later.' },
+        standardHeaders: true,
+        legacyHeaders: false,
+    });
+    app.use('/api/', limiter);
 
     app.use(cors({
         origin: (origin, callback) => {

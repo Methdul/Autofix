@@ -14,6 +14,7 @@ import BusinessRegisterPage from './pages/auth/BusinessRegisterPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import ChatbotWidget from './components/chatbot/ChatbotWidget';
+import { Toaster } from 'react-hot-toast';
 import ProviderDashboard from './pages/dashboard/provider/ProviderDashboard';
 import MyServices from './pages/dashboard/provider/MyServices';
 import ProfileSettings from './pages/dashboard/provider/ProfileSettings';
@@ -80,6 +81,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       <ChatbotWidget />
+      <Toaster position="top-right" />
     </AuthProvider >
 
   );

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import { bookingApi, type BookingResponse } from '../api/booking.api';
 import { socketClient } from '../utils/socket';
 import { useAuth } from './useAuth';
@@ -33,9 +34,10 @@ export function useProviderBooking(id?: string) {
         setProcessing(true);
         try {
             const updatedBooking = await bookingApi.updateBookingStatus(bookingId, newStatus);
+            toast.success(`Booking ${newStatus.toLowerCase()} successfully`);
             setBooking((prev: BookingResponse | null) => prev ? { ...prev, status: updatedBooking.status } : null);
         } catch (err: any) {
-            alert(err.response?.data?.error || 'Failed to update status');
+            toast.error(err.response?.data?.error || 'Failed to update status');
         } finally {
             setProcessing(false);
         }

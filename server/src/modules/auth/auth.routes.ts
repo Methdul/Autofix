@@ -6,6 +6,8 @@ import {
     forgotPasswordHandler,
     resetPasswordHandler,
 } from './auth.controller';
+import { validate } from '../../middlewares/validation.middleware';
+import { loginSchema, registerSchema } from './auth.validation';
 
 /**
  * Authentication Routes
@@ -14,13 +16,13 @@ import {
 const authRoutes = Router();
 
 /** POST /auth/register — Register a new customer (OWNER role) */
-authRoutes.post('/register', registerHandler);
+authRoutes.post('/register', validate(registerSchema), registerHandler);
 
 /** POST /auth/register-business — Register a new service provider */
 authRoutes.post('/register-business', registerBusinessHandler);
 
 /** POST /auth/login — Login an existing user */
-authRoutes.post('/login', loginHandler);
+authRoutes.post('/login', validate(loginSchema), loginHandler);
 
 /** POST /auth/forgot-password — Generate a password reset token */
 authRoutes.post('/forgot-password', forgotPasswordHandler);
