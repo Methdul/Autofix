@@ -1,0 +1,7 @@
+client/
+node_modules/
+.git/
+.vercel/
+dist/
+build/
+*.log
