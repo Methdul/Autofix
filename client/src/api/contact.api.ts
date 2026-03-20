@@ -3,7 +3,7 @@
  * Handles HTTP calls to the POST /api/contact endpoint
  */
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api';
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3000') + '/api';
 
 export interface ContactFormPayload {
     name: string;

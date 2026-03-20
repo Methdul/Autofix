@@ -40,7 +40,10 @@ export function createApp(): Application {
  * @param {Application} app - Express application instance
  */
 function configureMiddleware(app: Application): void {
-    app.use(cors());
+    app.use(cors({
+        origin: process.env.CLIENT_URL || 'http://localhost:5173',
+        credentials: true
+    }));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     // Serve uploaded provider photos as static files
