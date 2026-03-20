@@ -3,7 +3,9 @@
  * Handles HTTP calls to the /api/services endpoint
  */
 
-const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3000') + '/api';
+import { API_URL } from './auth.api';
+
+const API_BASE = API_URL + '/api';
 
 /** Filters for the public service listing */
 export interface ServiceFilters {
