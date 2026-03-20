@@ -51,6 +51,24 @@ export class BookingService {
             throw new Error('Cannot book a timeslot that has already passed');
         }
 
+        // Check for duplicate booking (same provider, same date, same timeslot)
+        // Normalize date to midnight for accurate comparison
+        const normalizedDate = new Date(new Date(data.serviceDate).setHours(0, 0, 0, 0));
+        const existingBooking = await this.prisma.booking.findFirst({
+            where: {
+                providerId: data.providerId,
+                serviceDate: normalizedDate,
+                timeSlot: data.timeSlot,
+                status: {
+                    notIn: [BookingStatus.REJECTED, BookingStatus.CANCELLED]
+                }
+            }
+        });
+
+        if (existingBooking) {
+            throw new Error('This time slot is already booked for this provider');
+        }
+
         const booking = await this.bookingRepository.create(data);
 
         // Notify via Sockets
