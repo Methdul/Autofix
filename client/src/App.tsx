@@ -19,6 +19,7 @@ import MyServices from './pages/dashboard/provider/MyServices';
 import ProfileSettings from './pages/dashboard/provider/ProfileSettings';
 import ProviderBookingDetails from './pages/dashboard/provider/ProviderBookingDetails';
 import OwnerDashboard from './pages/dashboard/owner/OwnerDashboard';
+import CreateBookingPage from './pages/bookings/CreateBookingPage';
 
 
 
@@ -44,7 +45,6 @@ function App() {
           <Route path="/dashboard/provider/bookings/:id" element={<ProviderBookingDetails />} />
           <Route path="/dashboard/provider/services" element={<MyServices />} />
           <Route path="/dashboard/provider/settings" element={<ProfileSettings />} />
-
           <Route path="/dashboard/owner" element={<OwnerDashboard />} />
 
 
@@ -59,6 +59,7 @@ function App() {
                   <Route path="/providers/:id" element={<ProviderProfilePage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/book/:serviceId" element={<CreateBookingPage />} />
                   <Route path="/contact" element={<AboutPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
