@@ -15,6 +15,10 @@ import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import ChatbotWidget from './components/chatbot/ChatbotWidget';
 import ProviderDashboard from './pages/dashboard/provider/ProviderDashboard';
+import MyServices from './pages/dashboard/provider/MyServices';
+import ProfileSettings from './pages/dashboard/provider/ProfileSettings';
+import ProviderBookingDetails from './pages/dashboard/provider/ProviderBookingDetails';
+
 
 
 /**
@@ -36,6 +40,10 @@ function App() {
 
           {/* Dashboard routes - no navbar/footer, dashboard has its own sidebar */}
           <Route path="/dashboard/provider" element={<ProviderDashboard />} />
+          <Route path="/dashboard/provider/bookings/:id" element={<ProviderBookingDetails />} />
+          <Route path="/dashboard/provider/services" element={<MyServices />} />
+          <Route path="/dashboard/provider/settings" element={<ProfileSettings />} />
+
 
           {/* Main routes - with navbar/footer */}
           <Route path="/*" element={
