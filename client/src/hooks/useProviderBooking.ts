@@ -7,6 +7,7 @@ export function useProviderBooking(id?: string) {
     const { user } = useAuth();
     const [booking, setBooking] = useState<BookingResponse | null>(null);
     const [loading, setLoading] = useState(true);
+    const [processing, setProcessing] = useState(false);
     const [error, setError] = useState('');
 
     const fetchBookingDetails = async () => {
@@ -29,11 +30,14 @@ export function useProviderBooking(id?: string) {
     };
 
     const handleStatusUpdate = async (bookingId: string, newStatus: string) => {
+        setProcessing(true);
         try {
             const updatedBooking = await bookingApi.updateBookingStatus(bookingId, newStatus);
             setBooking((prev: BookingResponse | null) => prev ? { ...prev, status: updatedBooking.status } : null);
         } catch (err: any) {
             alert(err.response?.data?.error || 'Failed to update status');
+        } finally {
+            setProcessing(false);
         }
     };
 
@@ -61,5 +65,5 @@ export function useProviderBooking(id?: string) {
         }
     }, [id, user?.id]);
 
-    return { booking, loading, error, handleStatusUpdate, refetch: fetchBookingDetails };
+    return { booking, loading, processing, error, handleStatusUpdate, refetch: fetchBookingDetails };
 }
