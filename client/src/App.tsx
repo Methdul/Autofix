@@ -22,6 +22,7 @@ import OwnerDashboard from './pages/dashboard/owner/OwnerDashboard';
 import CreateBookingPage from './pages/bookings/CreateBookingPage';
 import MyVehicles from './pages/dashboard/owner/MyVehicles';
 import VehicleDetails from './pages/dashboard/owner/VehicleDetails';
+import OwnerProfileSettings from './pages/dashboard/owner/ProfileSettings';
 
 
 /**
@@ -40,6 +41,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
+
           {/* Dashboard routes - no navbar/footer, dashboard has its own sidebar */}
           <Route path="/dashboard/provider" element={<ProviderDashboard />} />
           <Route path="/dashboard/provider/bookings/:id" element={<ProviderBookingDetails />} />
@@ -48,6 +50,7 @@ function App() {
           <Route path="/dashboard/owner" element={<OwnerDashboard />} />
           <Route path="/dashboard/owner/vehicles" element={<MyVehicles />} />
           <Route path="/dashboard/owner/vehicles/:id" element={<VehicleDetails />} />
+          <Route path="/dashboard/owner/settings" element={<OwnerProfileSettings />} />
 
           {/* Main routes - with navbar/footer */}
           <Route path="/*" element={
