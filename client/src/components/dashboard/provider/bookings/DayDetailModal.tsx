@@ -1,8 +1,8 @@
 import React from 'react';
 import { format, isSameDay, parseISO } from 'date-fns';
-import { X, Clock, Car, Wrench } from 'lucide-react';
+import { X, Clock, Calendar as CalendarIcon } from 'lucide-react';
 import type { BookingResponse } from '../../../../api/booking.api';
-import { cn } from '../../../../utils/cn';
+import TimelineItem from './TimelineItem';
 
 interface DayDetailModalProps {
     isOpen: boolean;
@@ -11,111 +11,74 @@ interface DayDetailModalProps {
     bookings: BookingResponse[];
 }
 
+const TIME_SLOTS = [
+    '09:00 AM', '10:00 AM', '11:00 AM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM'
+];
+
 const DayDetailModal: React.FC<DayDetailModalProps> = ({ isOpen, onClose, date, bookings }) => {
     if (!isOpen) return null;
 
     const dayBookings = bookings.filter(booking => {
         const bookingDate = parseISO(booking.serviceDate);
-        return isSameDay(bookingDate, date);
+        return isSameDay(bookingDate, date) && (booking.status === 'ACCEPTED' || booking.status === 'IN_PROGRESS' || booking.status === 'COMPLETED');
     });
 
-    const statusConfig: Record<string, { bg: string; text: string; dot: string; label: string }> = {
-        PENDING: { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500', label: 'Pending' },
-        ACCEPTED: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500', label: 'Confirmed' },
-        IN_PROGRESS: { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500', label: 'In Progress' },
-        COMPLETED: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400', label: 'Completed' },
-        CANCELLED: { bg: 'bg-rose-50', text: 'text-rose-600', dot: 'bg-rose-400', label: 'Cancelled' },
-        REJECTED: { bg: 'bg-rose-50', text: 'text-rose-600', dot: 'bg-rose-400', label: 'Declined' },
+    const getBookingsForSlot = (slot: string) => {
+        return dayBookings.filter(b => b.timeSlot === slot);
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                onClick={onClose}
-            />
-
-            {/* Modal */}
-            <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden border border-white flex flex-col max-h-[90vh] animate-in zoom-in-95 slide-in-from-bottom-8 duration-500">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-slate-100">
-                    <div>
-                        <h3 className="text-xl font-bold text-slate-800 tracking-tight">
-                            {format(date, 'EEEE, MMMM d')}
-                        </h3>
-                        <p className="text-sm text-slate-500 font-medium mt-0.5">
-                            {dayBookings.length} {dayBookings.length === 1 ? 'booking' : 'bookings'} scheduled
-                        </p>
+                <div className="px-8 py-6 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white relative">
+                    <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-md">
+                                <CalendarIcon className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-black tracking-tight">{format(date, 'EEEE, MMMM do')}</h2>
+                                <p className="text-blue-100 font-medium opacity-90">{dayBookings.length} {dayBookings.length === 1 ? 'appointment' : 'appointments'} scheduled</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 rounded-2xl bg-white/10 hover:bg-white/20 transition-all text-white border border-white/20"
+                        >
+                            <X size={20} />
+                        </button>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-400 hover:text-slate-600"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
                 </div>
 
                 {/* Content */}
-                <div className="p-6 overflow-y-auto max-h-[60vh] space-y-3">
-                    {dayBookings.length === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <Clock className="w-7 h-7 text-slate-400" />
-                            </div>
-                            <p className="text-slate-500 font-medium">No bookings on this day</p>
-                        </div>
-                    ) : (
-                        dayBookings.map((booking) => {
-                            const config = statusConfig[booking.status] || statusConfig.PENDING;
-                            return (
-                                <div
-                                    key={booking.id}
-                                    className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200"
-                                >
-                                    <div className="flex items-start justify-between mb-3">
-                                        <div className="flex items-center gap-2">
-                                            <div className="p-1.5 bg-blue-50 rounded-lg">
-                                                <Wrench className="w-4 h-4 text-blue-600" />
-                                            </div>
-                                            <span className="font-bold text-slate-800 text-sm">
-                                                {booking.service?.name || 'General Service'}
-                                            </span>
-                                        </div>
-                                        <span className={cn(
-                                            'px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5',
-                                            config.bg, config.text
-                                        )}>
-                                            <span className={cn('w-1.5 h-1.5 rounded-full', config.dot)} />
-                                            {config.label}
-                                        </span>
-                                    </div>
+                <div className="flex-1 overflow-y-auto p-8 space-y-6 scrollbar-hide">
+                    <div className="relative">
+                        {/* Timeline Line */}
+                        <div className="absolute left-[39px] top-4 bottom-4 w-0.5 bg-slate-100"></div>
 
-                                    <div className="space-y-2 text-sm">
-                                        {booking.timeSlot && (
-                                            <div className="flex items-center gap-2 text-slate-600">
-                                                <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                                <span className="font-medium">{booking.timeSlot}</span>
-                                            </div>
-                                        )}
-                                        {booking.vehicle && (
-                                            <div className="flex items-center gap-2 text-slate-600">
-                                                <Car className="w-3.5 h-3.5 text-slate-400" />
-                                                <span className="font-medium">
-                                                    {booking.vehicle.make} {booking.vehicle.model} — {booking.vehicle.licensePlate}
-                                                </span>
-                                            </div>
-                                        )}
-                                        {booking.description && (
-                                            <p className="text-slate-500 text-xs mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                                                {booking.description}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })
-                    )}
+                        <div className="space-y-8">
+                            {TIME_SLOTS.map((slot) => (
+                                <TimelineItem
+                                    key={slot}
+                                    slot={slot}
+                                    bookings={getBookingsForSlot(slot)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-8 py-5 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                    <div className="flex items-center gap-2">
+                        <Clock className="w-3 h-3" />
+                        <span>All times in local time</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span>Working Hours: 9 AM - 5 PM</span>
+                    </div>
                 </div>
             </div>
         </div>
