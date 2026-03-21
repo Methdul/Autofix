@@ -6,8 +6,8 @@ import nodemailer from 'nodemailer';
  */
 const mailer = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465, // Use explicit port
-    secure: true,
+    port: 587, // Fallback to STARTTLS port
+    secure: false, // upgrade later with STARTTLS
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
