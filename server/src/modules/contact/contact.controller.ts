@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from '../../common/prisma.service';
 import mailer from '../../utils/mailer';
 
-const prisma = new PrismaClient();
+const prisma = PrismaService.getInstance();
 
 /** Destination address for all contact form notifications */
 const NOTIFY_EMAIL = 'info.autofixlk@gmail.com';
