@@ -35,25 +35,23 @@ export async function submitContactForm(req: Request, res: Response): Promise<vo
         return;
     }
 
-    // Attempt email — failure is non-fatal
-    try {
-        await mailer.sendMail({
-            from: `"AutoFix Contact" <${process.env.SMTP_USER}>`,
-            to: NOTIFY_EMAIL,
-            subject: `New Contact Message from ${name}`,
-            html: `
-                <h2>New Contact Form Submission</h2>
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Phone:</strong> ${phone ?? 'Not provided'}</p>
-                <hr/>
-                <p><strong>Message:</strong></p>
-                <p>${message.replace(/\n/g, '<br/>')}</p>
-            `,
-        });
-    } catch (mailError) {
+    // Fire-and-forget email — non-fatal, don't block the response
+    mailer.sendMail({
+        from: `"AutoFix Contact" <${process.env.SMTP_USER}>`,
+        to: NOTIFY_EMAIL,
+        subject: `New Contact Message from ${name}`,
+        html: `
+            <h2>New Contact Form Submission</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone ?? 'Not provided'}</p>
+            <hr/>
+            <p><strong>Message:</strong></p>
+            <p>${message.replace(/\n/g, '<br/>')}</p>
+        `,
+    }).catch((mailError) => {
         console.error('Contact email failed (non-fatal):', mailError);
-    }
+    });
 
     res.status(201).json(saved);
 }
