@@ -23,6 +23,7 @@ import notificationRoutes from './modules/notification/notification.routes';
  */
 export function createApp(): Application {
     const app = express();
+    app.set('trust proxy', 1); // Trust proxy for rate limiting (e.g., Railway/Vercel)
 
     // Middleware setup
     configureMiddleware(app);
@@ -50,7 +51,16 @@ function configureMiddleware(app: Application): void {
     ];
 
     // Secure HTTP headers
-    app.use(helmet());
+    // Secure HTTP headers with cross-origin resource policy allowed for images
+    app.use(helmet({
+        crossOriginResourcePolicy: { policy: "cross-origin" },
+        contentSecurityPolicy: {
+            directives: {
+                ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+                "img-src": ["'self'", "data:", "https:", "http:"],
+            },
+        },
+    }));
 
     // Rate limiting to prevent brute-force attacks
     const limiter = rateLimit({
