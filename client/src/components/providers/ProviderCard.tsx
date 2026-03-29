@@ -27,7 +27,9 @@ interface Props { provider: ProviderListItem; }
 /** Renders a styled card with provider photo, badge, stats, and Visit button */
 export default function ProviderCard({ provider }: Props) {
     const navigate = useNavigate();
-    const photoSrc = provider.photoUrl ? `${SERVER}${provider.photoUrl}` : null;
+    const photoSrc = provider.photoUrl
+        ? (provider.photoUrl.startsWith('http') ? provider.photoUrl : `${SERVER}${provider.photoUrl}`)
+        : null;
 
     return (
         <article className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col">

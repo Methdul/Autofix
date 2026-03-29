@@ -4,9 +4,11 @@
  */
 
 import { Response } from 'express';
+import path from 'path';
 import { AuthenticatedRequest } from '../../common/middleware/auth.middleware';
 import { ProviderService } from './provider.service';
 import { ProviderRepository } from './provider.repository';
+import { SupabaseStorageService } from '../../common/supabase-storage.service';
 import {
     UpdateProviderProfileDTO,
     CreateServiceItemDTO,
@@ -59,7 +61,16 @@ export async function uploadPhotoHandler(
             res.status(400).json({ error: 'No image file provided' });
             return;
         }
-        const photoUrl = `/uploads/${req.file.filename}`;
+
+        const ext = path.extname(req.file.originalname).toLowerCase() || '.png';
+        const filePath = `providers/${userId}-${Date.now()}${ext}`;
+        const photoUrl = await SupabaseStorageService.uploadFile(
+            'photos',
+            filePath,
+            req.file.buffer,
+            req.file.mimetype
+        );
+
         const profile = await providerService.updateProfile(userId, { photoUrl });
         res.status(200).json({ photoUrl, profile });
     } catch (error) {
