@@ -1,26 +1,13 @@
 /**
  * Multer upload middleware
- * Handles multipart/form-data file uploads for provider profile photos
+ * Handles multipart/form-data file uploads using memory storage
+ * Files are kept in buffer for subsequent upload to Supabase Storage
  */
 
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 
-/** Ensure uploads directory exists */
-const UPLOAD_DIR = path.join(__dirname, '../../../public/uploads');
-if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
-
-/** Disk storage — saves file with timestamp-prefixed original name */
-const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-    filename: (_req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, `${Date.now()}-${Math.round(Math.random() * 1e6)}${ext}`);
-    },
-});
+/** Memory storage — file buffer stays in req.file.buffer */
+const storage = multer.memoryStorage();
 
 /** Only accept jpeg / png / webp images up to 5 MB */
 export const uploadPhoto = multer({

@@ -25,7 +25,7 @@ export default function PhotoUploadSection({
                     <div className="w-32 h-32 rounded-3xl overflow-hidden bg-slate-100 border-4 border-white shadow-lg relative">
                         {photoUrl ? (
                             <img
-                                src={`${serverUrl}${photoUrl}`}
+                                src={photoUrl.startsWith('http') ? photoUrl : `${serverUrl}${photoUrl}`}
                                 alt="Profile"
                                 className="w-full h-full object-cover"
                             />

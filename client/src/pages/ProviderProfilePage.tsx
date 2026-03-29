@@ -67,7 +67,9 @@ export default function ProviderProfilePage() {
     );
 
     const { profile, services } = data;
-    const photoSrc = profile.photoUrl ? `${SERVER}${profile.photoUrl}` : null;
+    const photoSrc = profile.photoUrl
+        ? (profile.photoUrl.startsWith('http') ? profile.photoUrl : `${SERVER}${profile.photoUrl}`)
+        : null;
     const categoryStyle = BADGE_COLORS[profile.category] ?? 'bg-gray-100 text-gray-600';
 
     return (

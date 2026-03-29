@@ -1,8 +1,10 @@
 import { Response } from 'express';
+import path from 'path';
 import { AuthenticatedRequest } from '../../common/middleware/auth.middleware';
 import { VehicleService } from './vehicle.service';
 import { VehicleRepository } from './vehicle.repository';
 import { CreateVehicleDTO } from '../../types/vehicle.types';
+import { SupabaseStorageService } from '../../common/supabase-storage.service';
 
 /** Instantiate dependencies following DIP */
 const vehicleRepository = new VehicleRepository();
@@ -76,20 +78,27 @@ export async function getVehicleDetailsHandler(
  * Protected: Owner only
  */
 export async function updateVehiclePhotoHandler(
-    req: any, // Change 'AuthenticatedRequest' to 'any' here
+    req: any,
     res: Response
 ): Promise<void> {
     try {
         const ownerId = req.user!.userId;
         const vehicleId = req.params.id;
-        const file = req.file; // Now the Watchman will allow this!
+        const file = req.file;
 
         if (!file) {
             res.status(400).json({ error: 'Photo file is required' });
             return;
         }
 
-        const photoUrl = `/uploads/${file.filename}`;
+        const ext = path.extname(file.originalname).toLowerCase() || '.png';
+        const filePath = `vehicles/${vehicleId}-${Date.now()}${ext}`;
+        const photoUrl = await SupabaseStorageService.uploadFile(
+            'photos',
+            filePath,
+            file.buffer,
+            file.mimetype
+        );
 
         const vehicle = await vehicleService.updateVehiclePhoto(vehicleId, ownerId, photoUrl);
         res.status(200).json(vehicle);

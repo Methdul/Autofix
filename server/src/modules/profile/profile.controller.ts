@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
+import path from 'path';
 import { PrismaService } from '../../common/prisma.service';
 import { hashPassword, comparePassword } from '../../utils/password.util';
+import { SupabaseStorageService } from '../../common/supabase-storage.service';
 
 const prisma = PrismaService.getInstance();
 
@@ -163,7 +165,14 @@ export async function uploadPhotoHandler(req: Request, res: Response): Promise<v
             return;
         }
 
-        const photoUrl = `/uploads/${file.filename}`;
+        const ext = path.extname(file.originalname).toLowerCase() || '.png';
+        const filePath = `providers/${userId}-${Date.now()}${ext}`;
+        const photoUrl = await SupabaseStorageService.uploadFile(
+            'photos',
+            filePath,
+            file.buffer,
+            file.mimetype
+        );
 
         await prisma.providerProfile.update({
             where: { userId },

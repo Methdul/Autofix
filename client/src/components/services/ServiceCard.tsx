@@ -27,7 +27,9 @@ export default function ServiceCard({ service }: Props) {
     const navigate = useNavigate();
     const { user } = useAuth();
     const grad = GRADIENTS[service.name] ?? DEFAULT_GRADIENT;
-    const photoSrc = service.providerPhotoUrl ? `${SERVER}${service.providerPhotoUrl}` : null;
+    const photoSrc = service.providerPhotoUrl
+        ? (service.providerPhotoUrl.startsWith('http') ? service.providerPhotoUrl : `${SERVER}${service.providerPhotoUrl}`)
+        : null;
 
     return (
         <article className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
